@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "273533831178",
+    "project_id": "ashow-d014e",
+    "storage_bucket": "ashow-d014e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273533831178:android:e9c7f594dfdf0b77ebb7f3",
+        "android_client_info": {
+          "package_name": "com.ashow.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273533831178-ejgv6rtmebpeom9i3ea2rrg1je2j464s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzh5qHxtMCxT5L7oxw6J3LNpM6IEgFEDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273533831178-ejgv6rtmebpeom9i3ea2rrg1je2j464s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "273533831178-o9qtqkkf64nrnulftjqe62q64j7jbskp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ashow.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

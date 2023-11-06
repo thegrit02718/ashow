@@ -1,27 +1,57 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
+import { StyleSheet, Platform, Image } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Main from './Buildings/BuildingsMain';
 import Detail from './Buildings/Detail';
-import Page5 from './Buildings/Page5';
-import Page6 from './Buildings/Page6';
-import Page7 from './Buildings/Page7';
-import Page8 from './Buildings/Page8';
-import Page9 from './Buildings/Page9';
-
+import ArrangeImageWebView from "./Buildings/DetailComponent/ArrangeImageWebView";
+import CalculatorFirst from './Buildings/Caculator/CalculatorFirst';
+import CalculatorSecond from './Buildings/Caculator/CalculatorSecond';
+import CalculatorResult from './Buildings/Caculator/CalculatorResult';
+import CalculatorFilter from './Buildings/Caculator/CalculatorFilter';
+import TaxDetail from "./Buildings/CalculatorComponent/TaxDetail";
 
 const Stack = createNativeStackNavigator();
 
-function Navi_Buildings() {
+function Navi_Buildings(props : any) {
+
   return (
-    <Stack.Navigator >
-      <Stack.Screen options={{headerShown: false}} name={"Main"} component={Main} />
-      <Stack.Screen options={{headerShown: false}} name={"Detail"} component={Detail} />
-      <Stack.Screen options={{headerShown: false}} name={'Page5'} component={Page5}/>
-      <Stack.Screen options={{headerShown: false}} name={'Page6'} component={Page6}/>
-      <Stack.Screen options={{headerShown: false}} name={'Page7'} component={Page7}/>
-      <Stack.Screen options={{headerShown: false}} name={'Page8'} component={Page8}/>
-      <Stack.Screen options={{headerShown: false}} name={'Page9'} component={Page9}/>
+    <Stack.Navigator 
+      initialRouteName="Main"
+      screenOptions={{headerShown: false, gestureEnabled: true}}
+    >
+      <Stack.Screen name={"Main"} component={Main} />
+      <Stack.Screen name={"Detail"} component={Detail}/>
+      <Stack.Screen name={"단지 배치도"} component={ArrangeImageWebView} />
+      <Stack.Screen options={{headerShown: false}} name={'CalculatorFirst'} component={CalculatorFirst}/>
+      <Stack.Screen options={{headerShown: false}} name={'CalculatorSecond'} component={CalculatorSecond}/>
+      <Stack.Screen options={{headerShown: false}} name={'CalculatorResult'} component={CalculatorResult}/>
+      <Stack.Screen options={{headerShown: false}} name={'CalculatorFilter'} component={CalculatorFilter}/>
+      <Stack.Screen options={{headerShown: false}} name={'TaxDetail'} component={TaxDetail}/>
     </Stack.Navigator>
   );
 }
 export default Navi_Buildings;
+
+
+const styles = StyleSheet.create({
+   barStyle_android: {
+    height: 60,
+    padding: 5,
+    backgroundColor: 'white',
+    elevation: 3,
+    borderTopColor: 'gray',
+    borderTopWidth: 0.5,
+    paddingBottom: 10
+  },
+  barStyle_ios : {
+    height: 60,
+    padding: 5,
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    paddingBottom: 10
+  }
+});
+

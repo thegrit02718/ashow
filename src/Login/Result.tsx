@@ -27,12 +27,12 @@ export default function Agree (props : any) {
               </Text>
             </View>
         </View>
-        <TouchableOpacity 
+      </View>
+      <TouchableOpacity 
           onPress={moveHome} 
           style={styles.nextBtnBox}>
           <Text style={styles.nextBtnText}>아쇼 시작하기</Text>
         </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8726E',
     borderRadius: 16,
     width: '100%',
-    marginBottom: 50,
+    marginBottom: 30,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center'

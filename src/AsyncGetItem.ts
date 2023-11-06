@@ -5,11 +5,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const AsyncGetItem = async () => {
   try {
     const refreshToken : string | null = await AsyncStorage.getItem('token');
+    const userAccount : string | null = await AsyncStorage.getItem('account');
     const userName : string | null = await AsyncStorage.getItem('name');
     const userNickName : string | null = await AsyncStorage.getItem('nickname');
     const userURL : string | null = await AsyncStorage.getItem('URL');
     return {
-      refreshToken, userName, userNickName, userURL
+      refreshToken, userAccount, userName, userNickName, userURL
     }
     
   } catch (error) {

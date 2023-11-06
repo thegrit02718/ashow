@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "273533831178-ejgv6rtmebpeom9i3ea2rrg1je2j464s.apps.googleusercontent.com",
+          "client_id": "273533831178-uqapd6nt8ft3f4ss504b4sh9juca2lkc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ashow.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "273533831178-naaefhhk52nv05o9ufmtfrrd2vs7hn7m.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

@@ -1,25 +1,23 @@
 import * as React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, Platform } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack"; 
+import { StyleSheet, Platform, Image } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import Navi_Home from "./Navi_Home";
 import Navi_Guide from "./Navi_Guide";
 import Navi_Buildings from "./Navi_Buildings";
 import Navi_MyPage from "./Navi_MyPage";
-import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {checkNotifications, requestNotifications} from 'react-native-permissions';
 import messaging from '@react-native-firebase/messaging';
 import axios from "axios";
 import MainURL from '../MainURL';
+import AsyncGetItem from './AsyncGetItem'
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function Main() {
 
+  // checkNotificationPermission
   checkNotifications().then(({status, settings}) => {
     if (status === 'denied' || status === 'blocked'){
       requestNotifications(['alert', 'sound']);
@@ -30,59 +28,110 @@ export default function Main() {
     }
   })
 
-  // firebase notification 토큰받기
-  async function checkFireBaseApplicationPermission()  {
+  // AsyncGetData
+  const [asyncGetData, setAsyncGetData] = useState<any>({});
+  const asyncFetchData = async () => {
+    try {
+      const data = await AsyncGetItem();
+      setAsyncGetData(data);
+      takeFireBaseToken(data?.userAccount)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  // firebase notification 토큰 발급 후 저장
+  async function takeFireBaseToken(account : string | null | undefined) {
     const token = await messaging().getToken();
-    console.log(Platform.OS, token);
-    // fcm 토큰 저장하기 로직 구현
-    // axios
-    //   .post(`${MainURL}/notification/savetoken`, {
-    //     token : token,
-    //   })
-    //   .then((res) => {
-    //     console.error(res.data);    
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    // fcm 토큰 저장하기
+    axios
+      .post(`${MainURL}/notification/savefirebasetoken`, {
+        token : token, userAccount: account
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
      
   useEffect(()=>{
-    checkFireBaseApplicationPermission();
+    asyncFetchData();
   }, []); 
+
   
   return (
     <Tab.Navigator 
-      style={Platform.OS === 'android' ? styles.android : styles.ios}
-      barStyle={Platform.OS === 'android' ? styles.barStyle_android : styles.barStyle_ios}
+      sceneContainerStyle = {Platform.OS === 'android' ? styles.android : styles.ios}
+      screenOptions={{
+        headerShown : false,
+        tabBarStyle: Platform.OS === 'android' ? styles.barStyle_android : styles.barStyle_ios,
+        tabBarActiveTintColor : '#CC5A57'
+      }}
     >
       <Tab.Screen
         name="홈"
         component={Navi_Home}
         options={{
-          tabBarIcon: () => <Feather name="home" size={24} color="black" />,
-            
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('./images/tabButtons/selected_home.png')
+                  : require('./images/tabButtons/default_home.png')
+              }
+              style={{width: 22, height: 22}}
+            />
+          ),
         }}
       ></Tab.Screen>
       <Tab.Screen
         name="매물"
         component={Navi_Buildings}
         options={{
-          tabBarIcon: () => <FontAwesome5 name="building" size={24} color="black" />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                ? require('./images/tabButtons/selected_buildings.png')
+                : require('./images/tabButtons/default_buildings.png')
+              }
+              style={{width: 22, height: 22}}
+            />
+          ),
         }}
       />
       <Tab.Screen
         name="부동산가이드"
         component={Navi_Guide}
         options={{
-          tabBarIcon: () => <Feather name="book" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                ? require('./images/tabButtons/selected_guide.png')
+                : require('./images/tabButtons/default_guide.png')
+              }
+              style={{width: 22, height: 22}}
+            />
+          ),
         }}
       />
       <Tab.Screen
         name="마이페이지"
         component={Navi_MyPage}
         options={{
-          tabBarIcon: () => <Ionicons name="person-outline" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('./images/tabButtons/selected_mypage.png')
+                  : require('./images/tabButtons/default_mypage.png')
+              }
+              style={{width: 22, height: 22}}
+            />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -98,17 +147,23 @@ const styles = StyleSheet.create({
     paddingTop: getStatusBarHeight()
   },
   barStyle_android: {
+    height: 60,
+    padding: 5,
     backgroundColor: 'white',
     elevation: 3,
     borderTopColor: 'gray',
-    borderTopWidth: 0.5
+    borderTopWidth: 0.5,
+    paddingBottom: 10
   },
   barStyle_ios : {
+    height: 60,
+    padding: 5,
     backgroundColor: 'white',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    paddingBottom: 10
   }
 });
 

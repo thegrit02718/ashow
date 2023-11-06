@@ -32,8 +32,6 @@ export default function Agree (props : any) {
   const [userNickName, setUserNickName] = useState('');
   const [userURL, setUserURL] = useState('');
 
-  console.log(refreshToken, userAccount, userName, userNickName);
-
   const [isCheck1, setIsCheck1] = useState<boolean>(false);
   const [isCheck2, setIsCheck2] = useState<boolean>(false);
   const [isCheck3, setIsCheck3] = useState<boolean>(false);
@@ -76,8 +74,7 @@ export default function Agree (props : any) {
 
   // 회원가입하기
   const handleSignup = () => {
-
-    if (userName !== null && userAccount !== null ) {
+    if (userAccount !== null ) {
       axios
         .post(`${MainURL}/login/logisterdo`, {
           userAccount: userAccount,
@@ -86,9 +83,9 @@ export default function Agree (props : any) {
           userURL: userURL
         })
         .then((res) => {
-          if (res.data === userName) {
-            Alert.alert('회원가입이 완료되었습니다!');
-            AsyncSetItem(refreshToken, userName, userNickName, userURL);
+          console.log(res.data);
+          if (res.data === userAccount) {
+            AsyncSetItem(refreshToken, userAccount, userName, userNickName, userURL);
             props.navigation.navigate('Result', {nickName : userNickName});
           } else {
             Alert.alert('다시 시도해 주세요.');
@@ -143,16 +140,19 @@ export default function Agree (props : any) {
               <Text style={styles.allCheckboxText}>모든 약관에 동의합니다.</Text>
             </View>      
           </View>
-          <TouchableOpacity 
-            onPress={handleSignup}
-            style={
-              isAllCheck ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
-              : [styles.nextBtnBox, { backgroundColor: '#F0A3A1'}]
-            }
-            >
-            <Text style={styles.nextBtnText}>가입하기</Text>
-          </TouchableOpacity>
+          
         </View>
+      </View>
+      <View style={{paddingHorizontal:24}}>
+        <TouchableOpacity 
+          onPress={handleSignup}
+          style={
+            isAllCheck ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
+            : [styles.nextBtnBox, { backgroundColor: '#F0A3A1'}]
+          }
+          >
+          <Text style={styles.nextBtnText}>가입하기</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -182,10 +182,12 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   backButton: {
-    width: 24,
-    height: 24,
-    marginTop: 24,
-    marginBottom: 42
+    width: 50,
+    height: 50,
+    marginTop: 14,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   inputContainer: {
     flex: 6,

@@ -8,8 +8,7 @@ import LocalNews from './LocalNews';
 import Notice from './Notice';
 import AsyncGetItem from '../AsyncGetItem'
 import { Typography } from '../Components/Typography';
-import messaging from '@react-native-firebase/messaging';
-import Notification from "../Notification";
+import CapitalGraph from '../Buildings/CalculatorComponent/CapitalGraph';
 
 function HomeMain(props : any) {
 
@@ -70,30 +69,28 @@ function HomeMain(props : any) {
         </Typography>
       </View>
       <View style={styles.favorsListContentBox}>
-        <Typography color={'gray'}>{address}</Typography>
-        <Typography color={'gray'}>{size1}평({size2}㎡)</Typography>
+        <Typography color={'gray'} fontSize={12}>{address}</Typography>
+        <Typography color={'gray'} fontSize={12}>{size1}평({size2}㎡)</Typography>
       </View>
       <View style={styles.divider} />
     </View>
   );
 
-  
-
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%'}}>
-        
         {/* logobox & title */}
         <View style={styles.logobox}>
+          
           <Image source={require('../images/home/toplogo.png')} style={styles.toplogo}/>
-          <TouchableOpacity 
+          {/* <TouchableOpacity 
             onPress={() => {
-              
+              props.navigation.navigate("마이페이지", {screen:"알림"});
             }}
             style={styles.topbell}
             >
             <AntDesign name="bells" size={30} color="black" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.titlebox}>
           <Text style={{fontSize:20, marginBottom: 10}}>안녕하세요 <Typography fontSize={20}>{asyncGetData.userNickName}</Typography>님!</Text>
@@ -104,7 +101,7 @@ function HomeMain(props : any) {
         <View style={styles.linkbuttonContainer}>
           <TouchableOpacity 
             onPress={() => {
-              // props.navigation.navigate('관심단지');
+              props.navigation.navigate('매물');
             }}
             style={styles.linkbutton}
             >
@@ -115,36 +112,36 @@ function HomeMain(props : any) {
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => {
-              // props.navigation.navigate('알림');
+              props.navigation.navigate('Prepare');
             }}
             style={styles.linkbutton}
             >
             <View style={styles.linkImageBox}>
               <Image source={require('../images/home/button2.png')} style={styles.linkImage}/>
             </View>
-            <Typography>관심단지</Typography>
+            <Typography fontSize={12}>관심단지</Typography>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => {
-              // props.navigation.navigate('관심단지');
+              props.navigation.navigate('Prepare');
             }}
             style={styles.linkbutton}
             >
             <View style={styles.linkImageBox}>
               <Image source={require('../images/home/button3.png')} style={styles.linkImage}/>
             </View>
-            <Typography>아쇼사용법</Typography>
+            <Typography fontSize={12}>아쇼사용법</Typography>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => {
-              // props.navigation.navigate('관심단지');
+              props.navigation.navigate('Prepare');
             }}
             style={styles.linkbutton}
             >
             <View style={styles.linkImageBox}>
               <Image source={require('../images/home/button4.png')} style={styles.linkImage}/>
             </View>
-            <Typography>공지사항</Typography>
+            <Typography fontSize={12}>공지사항</Typography>
           </TouchableOpacity>
         </View>
 
@@ -238,6 +235,14 @@ function HomeMain(props : any) {
         <View style={styles.notice}>
           <Typography fontSize={20} marginBottom={18}>공지사항</Typography>
           <Notice></Notice>
+        </View>
+
+        {/* footer */}
+        <View style={{backgroundColor:'#EAEAEA', height:150, width:'100%', padding:20}}>
+          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>(주)더그릿</Typography>
+          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>사업자등록번호 : 146-87-02718</Typography>
+          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>대표 E-Mail : thegrit02718@naver.com</Typography>
+          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>대표 카카오톡 ID : thegrit02718</Typography>
         </View>
 
       </ScrollView>

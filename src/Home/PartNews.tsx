@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView } from 'react-native';
-import AppText from '../../AppText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Typography } from '../Components/Typography';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -35,8 +35,8 @@ interface NewListProps {
 const NewList: React.FC<NewListProps> = ({ title, date, author, image }) => (
   <View style={styles.newsList}>
     <View style={styles.newsTextBox}>
-      <AppText style={styles.newsTitle}>{title}</AppText>
-      <AppText style={styles.newsInfo}>{date} | {author}</AppText>
+      <Text style={{flex: 1, paddingRight: 10}}>{title}</Text>
+      <Typography fontSize={12} color={'gray'}>{date} | {author}</Typography>
     </View>
     <View style={styles.newsImageBox}>
       <Image style={styles.newsImage} source={{uri: image}}/>

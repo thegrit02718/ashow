@@ -10,20 +10,15 @@ import messaging from '@react-native-firebase/messaging';
 
 const Stack = createNativeStackNavigator();
 
- //FCM-background 알림 받기 로직
- messaging().setBackgroundMessageHandler(async remoteMessage => {
-  if(remoteMessage) {
+function App (props : any) {
+
+  //FCM-background 알림 받기 로직
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log(`${Platform.OS} [Background Message]`, remoteMessage);
-  }
-});
-
-// useEffect(()=>{
-  //FCM-foreground 로직 구현하기
-  // ...
-//  }, []);
-
-function App () {
-    return (
+  });
+  
+  
+  return (
     <NavigationContainer>
       <StatusBar 
         barStyle='dark-content'

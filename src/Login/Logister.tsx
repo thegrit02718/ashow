@@ -157,10 +157,12 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   backButton: {
-    width: 24,
-    height: 24,
-    marginTop: 24,
-    marginBottom: 42
+    width: 50,
+    height: 50,
+    marginTop: 14,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   inputContainer: {
     flex: 5,

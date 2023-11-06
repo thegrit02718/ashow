@@ -24,6 +24,7 @@ function MyPageMain (props: any) {
 
   const handleLogout = () => {
     AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('account');
     AsyncStorage.removeItem('name');
     AsyncStorage.removeItem('nickname');
     AsyncStorage.removeItem('URL');
@@ -41,15 +42,6 @@ function MyPageMain (props: any) {
       <View style={styles.profileContainer}>
 
         <View style={styles.titleBox}>
-          <View style={styles.titleTopIcon}> 
-            <TouchableOpacity 
-              onPress={() => {
-                  // props.navigation.navigate('상담내역');
-              }}
-              >
-              <Text><AntDesign name="setting" size={20} color="black" /></Text>
-            </TouchableOpacity>
-          </View>
           <View style={styles.titleMainTextBox}> 
             <Text style={{fontSize: 20, marginBottom: 10}}>안녕하세요!</Text>
             <Text style={styles.userName}>{asyncGetData.userNickName}님</Text>  
@@ -60,7 +52,7 @@ function MyPageMain (props: any) {
         <View style={styles.linkbuttonBox}>
           <TouchableOpacity 
             onPress={() => {
-              props.navigation.navigate('상담내역');
+              props.navigation.navigate('FavorList');
             }}
             style={styles.linkbutton}
             >
@@ -82,7 +74,7 @@ function MyPageMain (props: any) {
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => {
-              props.navigation.navigate('관심단지');
+              props.navigation.navigate('TalkList');
             }}
             style={styles.linkbutton}
             >
@@ -95,40 +87,18 @@ function MyPageMain (props: any) {
 
         <TouchableOpacity 
           onPress={() => { 
-            props.navigation.navigate('히스토리');
+            props.navigation.navigate('History');
           }}
            style={styles.historyBox}
           >
           <View style={styles.historyText}>
-            <Text style={{fontSize: 18, color: 'white', marginBottom: 7}}>상담내역</Text>
+            <Text style={{fontSize: 18, color: 'white', marginBottom: 7}}>히스토리</Text>
             <Text style={{fontSize: 12, color: 'white'}}>최근 본 단지와 게시물을 확인하세요!</Text>
           </View>
           <AntDesign name="right" size={15} color="white"/>
         </TouchableOpacity>
         
       </View> 
-
-      <View style={styles.bottomContainer}>
-        <Text style={styles.bottomTitle}>서비스 설정</Text>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          props.navigation.navigate('알림설정');
-        }}>
-          <Text style={styles.bottomButtonText}>알림 설정</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
-        }}>
-          <Text style={styles.bottomButtonText}>관심정보 수정하기</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
-        }}>
-          <Text style={styles.bottomButtonText}>회원정보 수정</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-      </View>
 
       <View style={styles.bottomContainer}>
         <Text style={styles.bottomTitle}>공지사항</Text>
@@ -139,27 +109,15 @@ function MyPageMain (props: any) {
           <AntDesign name="right" size={15} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
+           props.navigation.navigate("1:1문의하기");
         }}>
           <Text style={styles.bottomButtonText}>1:1 문의하기</Text>
           <AntDesign name="right" size={15} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
+          props.navigation.navigate("광고문의");
         }}>
           <Text style={styles.bottomButtonText}>광고 및 제휴 문의</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
-        }}>
-          <Text style={styles.bottomButtonText}>불편사항 신고하기</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
-        }}>
-          <Text style={styles.bottomButtonText}>자주 묻는 질문</Text>
           <AntDesign name="right" size={15} color="black" />
         </TouchableOpacity>
       </View>
@@ -167,23 +125,23 @@ function MyPageMain (props: any) {
       <View style={styles.bottomContainer}>
         <Text style={styles.bottomTitle}>약관/운영정책</Text>
         <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-
+            props.navigation.navigate('약관및정책');
         }}>
           <Text style={styles.bottomButtonText}>서비스 이용 약관</Text>
           <AntDesign name="right" size={15} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          
+          props.navigation.navigate('개인정보처리방침');
         }}>
           <Text style={styles.bottomButtonText}>개인정보 처리방침</Text>
           <AntDesign name="right" size={15} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
+        {/* <TouchableOpacity style={styles.bottomButton} onPress={()=>{
           
         }}>
           <Text style={styles.bottomButtonText}>버전 정보</Text>
           <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       
       <TouchableOpacity

@@ -4,7 +4,7 @@ import { Text as RNText } from 'react-native';
 export const Typography:React.FC<{
     color?:string,
     fontSize?:number,
-    fontWeight?: "normal" | "bold" | "600",
+    fontWeight?: "normal" | "bold" | "600" | "500"
     marginBottom?:number,
     children:React.ReactElement | any | React.ReactElement[]
 }> = (props)=>{
@@ -12,7 +12,7 @@ export const Typography:React.FC<{
     return (
         <RNText 
             style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'Noto sans',
                 color: props.color ?? 'black',
                 fontSize: props.fontSize ?? 16,
                 fontWeight: props.fontWeight ?? 'bold',

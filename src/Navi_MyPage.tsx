@@ -14,7 +14,6 @@ import TalkList from "./MyPage/MyMenu/TalkList";
 import { TouchableOpacity, Text } from "react-native";
 import Feather from 'react-native-vector-icons/Feather';
 import EditProfile from "./MyPage/EditProfile";
-import EditProfileDetail from "./MyPage/EditProfileDetail";
 import NotificationDetail from "./MyPage/MyMenu/NotificationDetail";
 const Stack = createNativeStackNavigator();
 
@@ -47,9 +46,7 @@ function Navi_MyPage() {
          title: '프로필 편집',
          headerTitleAlign: 'center',
          headerShadowVisible: false,}}/>
-      <Stack.Screen name={'추가정보변경'} component={EditProfileDetail} options={{
-         title: '',
-         headerShadowVisible: false,}}/>
+    
       <Stack.Screen name={'회원 탈퇴'} component={DeleteAccount}/>
       <Stack.Screen name={'광고문의'} component={Advertising}/>
       <Stack.Screen name={'공지사항'} component={Notice}/>

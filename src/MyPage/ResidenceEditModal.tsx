@@ -13,7 +13,7 @@ interface ModalProps{
 }
 
 type SelectedItemType = {
-    list: CityDataProps[];
+    list: CityDataProps[][];
     city: {
         isSelected: boolean;
         code : string | undefined;
@@ -57,27 +57,33 @@ type CityDataProps = {
         return extreatedtName;
     }
 
+    // 받아온 데이터를 몇개 단위로 잘라서 state에 저장해주는 함수
+    const createSlicedList = (data:CityDataProps[]) =>{
+        const itemsPerSlide = 15;
+        const slicedLists = Array.from({
+            length: Math.ceil(data.length / itemsPerSlide)
+        }).map((_, idx) =>
+            data.slice(
+                idx * itemsPerSlide,
+                (idx + 1) * itemsPerSlide
+            )
+        )
+        setSelectedList((prev)=>({
+            ...prev,
+            list: slicedLists,
+        }))
+       
+    }
+    
     // 구/군의 리스트를 받아오는 함수
     const fetchAllNeighborhoodsInCity = async (cityCode:string) => {
-       
         try{
             const cityPrefix = cityCode.slice(0, 2); // 도시 코드에서 앞의 두 자리를 추출
-            const response = await axios.get(`https://grpc-proxy-server-mkvo6j4wsq-du.a.run.app/v1/regcodes?regcode_pattern=${cityPrefix}*00000`);
-            const itemsPerSlide = 15;
-            const slicedLists = Array.from({
-                length: Math.ceil(response.data.regcodes.length / itemsPerSlide)
-            }).map((_, idx) =>
-                response.data.regcodes.slice(
-                    idx * itemsPerSlide,
-                    (idx + 1) * itemsPerSlide
-                )
-            )
-            const reversedSlicedLists = slicedLists.reverse();
-         
-            setSelectedList((prev)=>({
-                ...prev,
-                list: reversedSlicedLists,
-            }))
+            const res  = await axios.get(`https://grpc-proxy-server-mkvo6j4wsq-du.a.run.app/v1/regcodes?regcode_pattern=${cityPrefix}*00000`);
+           
+           
+           createSlicedList(res.data.regcodes );
+            
         } catch (error) {
           console.log(error);
         }
@@ -86,23 +92,11 @@ type CityDataProps = {
     // 도시의 리스트를 받아오는 함수
     const fetchCityDistrictData = async(cityCode:string = "*00000000") =>{
         try{
-            const response = await axios.get(`https://grpc-proxy-server-mkvo6j4wsq-du.a.run.app/v1/regcodes?regcode_pattern=${cityCode}`);
-         
+            const res = await axios.get(`https://grpc-proxy-server-mkvo6j4wsq-du.a.run.app/v1/regcodes?regcode_pattern=${cityCode}`);
             const itemsPerSlide = 15;
-            const slicedLists = Array.from({
-                length: Math.ceil(response.data.regcodes.length / itemsPerSlide)
-            }).map((_, idx) =>
-                response.data.regcodes.slice(
-                  idx * itemsPerSlide,
-                  (idx + 1) * itemsPerSlide
-                )
-              );
-       
-            const reversedSlicedLists = slicedLists.reverse();
-            setSelectedList((prev)=>({
-                ...prev,
-                list: reversedSlicedLists,
-            }))
+            createSlicedList(res.data.regcodes );
+      
+          
         }catch(error){
             console.log(error);
         }

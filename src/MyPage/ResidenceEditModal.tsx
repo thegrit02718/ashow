@@ -6,10 +6,14 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import axios from "axios";
 import Swiper from "react-native-swiper";
 import { Alert } from "react-native";
+import AsyncSetItem from "../AsyncSetItem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserProfileProps } from "./EditProfile";
 
 interface ModalProps{
     visible:boolean;
     toggle: ()=> void;
+    setUserData: React.Dispatch<React.SetStateAction<UserProfileProps>>;
 }
 
 type SelectedItemType = {
@@ -31,7 +35,7 @@ type CityDataProps = {
     name: string;
 }
 
- const ResidenceEditModal = React.memo(({visible ,toggle}:ModalProps) => {
+const ResidenceEditModal = ({ visible, toggle, setUserData }: ModalProps) => {
     const [isAbled,setIsAbled] = useState(false);
     const [isPopuped, setIsPopuped] = useState(true);
     const [selectedList, setSelectedList] = useState<SelectedItemType>(
@@ -134,7 +138,21 @@ type CityDataProps = {
                 return;
             }   
     };
-  
+    
+    const saveDataHandler = async() =>{
+        const userAddress = selectedList.city.name + '' + selectedList.county.name
+      
+        try{
+            await AsyncStorage.setItem('address', userAddress);
+            setUserData((prev)=>({
+                ...prev,
+                address: userAddress
+            }))
+        }catch(err){
+            console.error(err)
+        }
+        toggle();
+    }
     useEffect(()=>{
         if (visible){
             setSelectedList({
@@ -222,7 +240,7 @@ type CityDataProps = {
                             </TouchableOpacity>
                         }
                     </View>
-                    <TouchableOpacity onPress={toggle}>
+                    <TouchableOpacity onPress={saveDataHandler}>
                         <View style={[styles.button, isAbled ? styles.abledButton : styles.enabledButton]}>
                             <Typography fontSize={16} color="#fff">설정 완료</Typography>
                         </View>
@@ -230,7 +248,7 @@ type CityDataProps = {
                 </View>
        </Modal>
     ) 
-})
+}
 
 export default ResidenceEditModal;
 const styles = StyleSheet.create({

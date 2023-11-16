@@ -10,16 +10,18 @@ import Input from '../Components/Input'
 import { Typography } from "../Components/Typography";
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from "axios";
+import { UserProfileProps } from "./EditProfile";
 
 interface NicknameFormValues{
     visible:boolean;
     nickname:string;
+    setUserData: React.Dispatch<React.SetStateAction<UserProfileProps>>;
     toggle: () => void;
 }
 
-export default function EditNicknameModal({visible, toggle, nickname}:NicknameFormValues){
+export default function EditNicknameModal({visible, toggle, setUserData, nickname}:NicknameFormValues){
     const [isChange, setIsChange] = useState(false) // 
-    const [userName,setUserName] = useState(""); // 유저 네임 활용
+    const [userName,setUserName] = useState(nickname); // 유저 네임 활용
     const [isValid,setIsValid]= useState(false); // 유효성검사 여부 
     const [errorMessage,setErrorMessage] = useState<boolean | string>(" ");
 
@@ -49,15 +51,16 @@ export default function EditNicknameModal({visible, toggle, nickname}:NicknameFo
     const isValidUserName = async ()=>{
         try{
             // api적용해야 함
-            const response = await axios.post('user/api/', {
-                nickName : nickname
+            const res = await axios.post('user/api/', {
+                userNickName : nickname
             });
-            if (response.status === 200) {
-                // 200 상태 코드: 닉네임 사용 가능
-                setErrorMessage('사용 가능한 닉네임입니다.');
-                setIsValid(true);
+            if (res.data) {
+               setIsValid(true);
+               setUserData((prev) => ({
+                ...prev,
+                userNickName: userName,
+              }));
             } else {
-                // 400 상태 코드: 중복된 닉네임
                 setErrorMessage('이미 사용 중인 닉네임입니다. 다른 닉네임을 시도해 주세요.');
                 setIsValid(false);
             }
@@ -66,7 +69,7 @@ export default function EditNicknameModal({visible, toggle, nickname}:NicknameFo
         }
     }
     const validateNickname = () =>{
-
+        console.log("ddd")
         const regex = /([^가-힣ㄱ-ㅎㅏ-ㅣ\x20])/i
 
         if(userName.length < 2){
@@ -81,23 +84,25 @@ export default function EditNicknameModal({visible, toggle, nickname}:NicknameFo
             setErrorMessage('닉네임에 특수기호 혹은 잘못된 닉네임이 존재합니다.');
             return
         }
-        isValidUserName();
+        setIsValid(true)
     }
-    
+  
     return (
         <Modal  
         animationType="slide"
         transparent={true}
         visible={visible}
         onRequestClose={toggle}>
-           <TouchableOpacity onPress={toggle} activeOpacity={1}>
-                <View style={{height:"100%",backgroundColor:"rgba(0,0,0,0.8)", padding:24}}>
-                    <TouchableOpacity onPress={isChange? validateNickname : undefined} >
+                <TouchableOpacity onPress={toggle} activeOpacity={1}>
+                    <View style={{height:"100%",backgroundColor:"rgba(0,0,0,0.8)", padding:24}}/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={isValidUserName} >
                         <View style={{flexDirection:"row", justifyContent:"flex-end", padding:5}}>
                             <Typography fontSize={18} color={isChange ? "#fff" : "#6F6F6F" }>완료</Typography>
                         </View>
-                    </TouchableOpacity>
-                    <View style={{position:"absolute",top:"45%",width:"100%",left:24}}>
+                </TouchableOpacity>
+                <View style={{position:"absolute",top:"45%",width:"100%",paddingHorizontal:24}}>
+                    <View>
                         <Typography fontSize={18} color="#fff" marginBottom={12}>닉네임 변경</Typography>
                         <View style={{ borderBottomWidth: 2, borderColor: "#fff", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10, paddingVertical:5, marginBottom:8}}>
                             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
@@ -106,6 +111,7 @@ export default function EditNicknameModal({visible, toggle, nickname}:NicknameFo
                                     onChange={onChange}
                                     cursor="white"
                                     style={{ flex: 1, fontSize: 14, color: "#fff", fontFamily: "Pretendard" }}
+                                    endEditing={validateNickname}
                                 />
                                 <View style={{flexDirection:"row", alignItems:"center"}}>
                                     {errorMessage && !isValid && <Ionicons  name="alert-circle" size={19} color="#EB683F" style={{marginRight:10}} />}
@@ -117,12 +123,12 @@ export default function EditNicknameModal({visible, toggle, nickname}:NicknameFo
                             </View>
                         </View>
                         <View style={{flexDirection:"row", alignItems:"center", justifyContent:'space-between'}}>
-                            <Typography fontSize={12} color="#fff" >{isValid && !errorMessage ? '사용 가능한 닉네임입니다.' : errorMessage}</Typography>
+                            {isValid ? <Typography fontSize={12} color="#43BA40" >올바른 형식의 이름입니다.</Typography> : <Typography fontSize={12} color="#E94A4A">{errorMessage}</Typography>}
                             <Typography fontSize={12} color="#fff" fontWeight="bold">{userName.length} / 6</Typography>
                         </View>
                     </View>
                 </View>
-            </TouchableOpacity>   
+           
         </Modal>
    
 

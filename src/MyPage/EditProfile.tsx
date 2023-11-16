@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { View,Image, Modal,Text,TouchableOpacity, Dimensions } from "react-native";
 import Layout from "../Components/Layout";
 import { Typography } from "../Components/Typography";
@@ -12,48 +12,54 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import EditNicknameModal from "./EditNicknameModal";
 import ResidenceEditModal from "./ResidenceEditModal";
 import LogoutModal from "./LogoutModal";
+import AsyncGetItem from "../AsyncGetItem";
 
-
-/* interface UserProfileProps{
-    name:string;
-    email: string;
-    accountType:string;
+export interface UserProfileProps{
+    userNickName:string;
     address: string;
-    phone:number;
-} */
-
-
+} 
 
 
 export default function EditProfile(props:any){ 
   const route : any = useRoute();
-  const userInfo = route.params.userInfo;
+  const {userInfo} = route.params;
  
   // 버튼의 활성화 여부 상태 변수
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [userData,setUserData] = useState<UserProfileProps>({
+    userNickName: userInfo.userNickName,
+    address: userInfo.userAddress ?? ""
+  })
   const [modalPopup,setModalPopup] = useState({
     editNickNameModol: false,
     residenceModal:false,
     logoutModal: false,
   })
- 
+ console.log(userData,'userData')
   const { width } = Dimensions.get('window');
   const subtractedWidth = width - 136;
+   
+ 
+   
+ const [asyncGetData, setAsyncGetData] = useState<any>({});
+  
+  
   const toggleModal = (modalType: string): void => {
     switch (modalType) {
-      case 'editNickname':
-        setModalPopup((prev)=>({...prev, editNickNameModol:!modalPopup.editNickNameModol}));
-        break;
-      case 'residence':
-        setModalPopup((prev)=>({...prev, residenceModal:!modalPopup.residenceModal}));
-        break;
-      case 'logout':
-        setModalPopup((prev)=>({...prev, logoutModal:!modalPopup.logoutModal}));
-        break;  
-      default:
-        break;
+        case 'editNickname':
+            setModalPopup((prev)=>({...prev, editNickNameModol:!modalPopup.editNickNameModol}));
+            break;
+        case 'residence':
+            setModalPopup((prev)=>({...prev, residenceModal:!modalPopup.residenceModal}));
+            break;
+        case 'logout':
+            setModalPopup((prev)=>({...prev, logoutModal:!modalPopup.logoutModal}));
+            break;  
+        default:
+            break;
     }
-  }
+   }
+  
 
   let icon, url;
   switch (userInfo.userURL) {
@@ -62,7 +68,7 @@ export default function EditProfile(props:any){
       url = '카카오톡';
       break;
     case 'google':
-      icon = require('../images/login/iconkakao.png'),
+      icon = require('../images/login/icongoogle.png'),
       url = '구글';
       break;
     case 'naver':
@@ -81,6 +87,7 @@ export default function EditProfile(props:any){
   };
   const saveEventHandler = () =>{
         Alert.alert('click');
+  
   }
 
     return (
@@ -96,7 +103,7 @@ export default function EditProfile(props:any){
                         </View>
                         <TouchableOpacity  onPress={()=> toggleModal('editNickname')}>
                             <View style={[styles.inputContainer,styles.bolder,{width: subtractedWidth}]}>
-                                <Typography fontSize={16} fontWeight="normal">{userInfo.userName}</Typography>
+                                <Typography fontSize={16} fontWeight="normal">{userData.userNickName}</Typography>
 
                                 <MaterialCommunityIcons name="pencil" size={16} color="#C1C1C1"  style={{width:14,height:16}}/>
                             </View>
@@ -134,7 +141,7 @@ export default function EditProfile(props:any){
                         </View>
                         <TouchableOpacity  onPress={()=> toggleModal('residence')}>
                             <View style={[styles.inputContainer, styles.bolder,{width:subtractedWidth}]}>
-                                <Typography fontSize={14} fontWeight="normal" color="#6F6F6F">{userInfo.address?? '거주지역을 선택해주세요'}</Typography>
+                                <Typography fontSize={14} fontWeight="normal" color="#6F6F6F">{userData.address?? '거주지역을 선택해주세요'}</Typography>
                                 <SimpleLineIcons name="arrow-down" size={16} color="#C1C1C1"  style={{width:24,height:16}}/>
                             </View>
                         </TouchableOpacity>
@@ -154,12 +161,12 @@ export default function EditProfile(props:any){
                 </TouchableOpacity>
             </View>
             <LogoutModal visible={modalPopup.logoutModal} toggle={()=> toggleModal('logout')} logout={handleLogout}/>
-            <EditNicknameModal nickname={userInfo.userName} visible={modalPopup.editNickNameModol} toggle={()=>toggleModal('editNickname')} />
-            <ResidenceEditModal visible={modalPopup.residenceModal} toggle={() => toggleModal('residence') }/>
+            <EditNicknameModal nickname={userInfo.userNickName} setUserData={setUserData} visible={modalPopup.editNickNameModol} toggle={()=>toggleModal('editNickname')} />
+            <ResidenceEditModal visible={modalPopup.residenceModal} setUserData={setUserData} toggle={() => toggleModal('residence') }/>
         </View>
     )
 }
-22
+
  
 
 const styles = StyleSheet.create({

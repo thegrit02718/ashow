@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AsyncGetItem from '../AsyncGetItem'
+import { Typography } from '../Components/Typography';
+import { TouchableWithoutFeedback } from 'react-native';
+import Layout  from '../Components/Layout';
+import { Divider } from '../Components/Divider';
+import LinkItem from '../Components/LinkItem';
+import MenuItem from '../Components/MenuItem';
+
 
 function MyPageMain (props: any) {
 
@@ -21,7 +29,6 @@ function MyPageMain (props: any) {
     asyncFetchData();
   }, []);
   
-
   const handleLogout = () => {
     AsyncStorage.removeItem('token');
     AsyncStorage.removeItem('account');
@@ -35,131 +42,128 @@ function MyPageMain (props: any) {
   const deleteAccount = () => {
     props.navigation.navigate("회원 탈퇴")
   };
+
+  const menuData = [
+    { key: '1', source: require("../images/mypage/buildings.png"), name: "매물" },
+    { key: '2', source: require("../images/mypage/guide.png"), name: "부동산 가이드" },
+    { key: '3', source: require("../images/mypage/calculator.png"), name: "세금 계산기" },
+    { key: '4', source: require("../images/mypage/method.png"), name: "아쇼 사용법" },
+    { key: '5', source: require("../images/mypage/enroll.png"), name: "아파트 등록 요청" },
+  ];
+
   
   return (
     <View style={styles.container}>
       <ScrollView>
-      <View style={styles.profileContainer}>
-
-        <View style={styles.titleBox}>
-          <View style={styles.titleMainTextBox}> 
-            <Text style={{fontSize: 20, marginBottom: 10}}>안녕하세요!</Text>
-            <Text style={styles.userName}>{asyncGetData.userNickName}님</Text>  
-          </View>
-        </View> 
-        
-
-        <View style={styles.linkbuttonBox}>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('FavorList');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkbuttonContent}>
-              <Image source={require('../images/mypage/favor.png')} style={styles.image}/> 
-              <Text style={{fontSize: 13, marginTop: 8}}>관심단지</Text>
+        <Layout>
+          <View style={styles.titleBox}>
+            <View style={styles.titleMainTextBox}> 
+              <Typography fontSize={20} fontWeightIdx={2} marginBottom={8}>안녕하세요!</Typography>
+              <Typography fontSize={28}>{asyncGetData.userNickName}님</Typography>  
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('알림');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkbuttonContent}>
-              <Image source={require('../images/mypage/alram.png')} style={styles.image}/> 
-              <Text style={{fontSize: 13, marginTop: 8}}>알림</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('TalkList');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkbuttonContent}>
-              <Image source={require('../images/mypage/chat.png')} style={styles.image}/> 
-              <Text style={{fontSize: 13, marginTop: 8}}>상담내역</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity 
-          onPress={() => { 
-            props.navigation.navigate('History');
-          }}
-           style={styles.historyBox}
-          >
-          <View style={styles.historyText}>
-            <Text style={{fontSize: 18, color: 'white', marginBottom: 7}}>히스토리</Text>
-            <Text style={{fontSize: 12, color: 'white'}}>최근 본 단지와 게시물을 확인하세요!</Text>
-          </View>
-          <AntDesign name="right" size={15} color="white"/>
-        </TouchableOpacity>
-        
-      </View> 
-
-      <View style={styles.bottomContainer}>
-        <Text style={styles.bottomTitle}>공지사항</Text>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          props.navigation.navigate('공지사항');
-        }}>
-          <Text style={styles.bottomButtonText}>아쇼 공지사항</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-           props.navigation.navigate("1:1문의하기");
-        }}>
-          <Text style={styles.bottomButtonText}>1:1 문의하기</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          props.navigation.navigate("광고문의");
-        }}>
-          <Text style={styles.bottomButtonText}>광고 및 제휴 문의</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.bottomContainer}>
-        <Text style={styles.bottomTitle}>약관/운영정책</Text>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-            props.navigation.navigate('약관및정책');
-        }}>
-          <Text style={styles.bottomButtonText}>서비스 이용 약관</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-          props.navigation.navigate('개인정보처리방침');
-        }}>
-          <Text style={styles.bottomButtonText}>개인정보 처리방침</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.bottomButton} onPress={()=>{
+            <TouchableWithoutFeedback onPress={()=> props.navigation.navigate('프로필편집', {userInfo: asyncGetData})} > 
+              <View style={styles.profileEditBtn}>
+                <Typography fontSize={12} color="#595959">프로필 편집하기 </Typography>
+                <MaterialIcons name="keyboard-arrow-right" size={20} color="#595959" style={{marginTop:2}} />
+              </View>
+            </TouchableWithoutFeedback>
+          </View> 
           
-        }}>
-          <Text style={styles.bottomButtonText}>버전 정보</Text>
-          <AntDesign name="right" size={15} color="black" />
-        </TouchableOpacity> */}
-      </View>
-      
-      <TouchableOpacity
-        hitSlop={{ top: 15, bottom: 15 }}
-        style={styles.logoutButton}
-        onPress={handleLogout}
-      >
-        <Text style={styles.logoutButtonText}>로그아웃</Text>
-      </TouchableOpacity> 
+          <View style={styles.linkbuttonBox}>
+            <TouchableOpacity 
+              onPress={() => {
+                props.navigation.navigate('FavorList');
+              }}
+              style={styles.linkbutton}
+              >
+              <View style={styles.linkbuttonContent}>
+                <Image source={require('../images/mypage/favor.png')} style={styles.image}/> 
+                 <Typography fontSize={14}>관심단지</Typography>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {
+                props.navigation.navigate('알림');
+              }}
+              style={styles.linkbutton}
+              >
+              <View style={styles.linkbuttonContent}>
+                <Image source={require('../images/mypage/alram.png')} style={styles.image}/> 
+                <Typography fontSize={14}>알림</Typography>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {
+                props.navigation.navigate('TalkList');
+              }}
+              style={styles.linkbutton}
+              >
+              <View style={styles.linkbuttonContent}>
+                <Image source={require('../images/mypage/chat.png')} style={styles.image}/> 
+                <Typography fontSize={14}>상담 내역</Typography>
+              </View>
+            </TouchableOpacity>
+           </View>
 
-      <TouchableOpacity
-        hitSlop={{ top: 15, bottom: 15 }}
-        style={styles.deleteAccountContainer}
-        onPress={deleteAccount}
-      >
-        <Text style={styles.deleteAccountText}>회원탈퇴를 하시려면 여기를 눌러주세요</Text>
-      </TouchableOpacity> 
+          <TouchableOpacity 
+            onPress={() => { 
+              props.navigation.navigate('History');
+            }}
+            style={styles.historyBox}
+            >
+            <View style={styles.historyText}>
+              <Typography fontSize={18} color='white' marginBottom={8}>히스토리</Typography>
+              <Text style={{fontSize: 12, color: 'white'}}>최근 본 단지와 게시물을 확인하세요!</Text>
+            </View>
+            <AntDesign name="right" size={15} color="white"/>
+          </TouchableOpacity>
+        </Layout>
+       
+        <Divider marginVertical={24}/>
+        <View style={{ width:"100%",flexDirection:"row" ,flexWrap: 'wrap', justifyContent:"space-between",paddingHorizontal:24,}}>
+        {menuData.map(item=>{
+          return <MenuItem key={item.key} name={item.name} source={item.source} />
+        })}
+        </View>
+          
+        <Divider marginVertical={32} height={8}/>
 
+        <Layout>
+          <Typography fontSize={20}>서비스 설정</Typography>
+          <View style={{marginTop:32}}>
+            <TouchableOpacity style={[styles.bottomButton,{marginBottom:24}]} onPress={()=>{
+              props.navigation.navigate('알림');
+            }}>
+              <Text style={styles.bottomButtonText}>알림 설정</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.bottomButton} onPress={()=>{
+              props.navigation.navigate('프로필편집');
+            }}>
+              <Text style={styles.bottomButtonText}>프로필 설정</Text>
+            </TouchableOpacity>            
+          </View>
+          <Divider marginVertical={32}/>
+          <View>
+            <Typography fontSize={20}>고객센터</Typography> 
+            <View style={{marginTop:32}}>
+              <LinkItem accent text="공지사항" onPress={()=>props.navigation.navigate('공지사항')}/>
+              <LinkItem accent text="1:1 문의하기" onPress={()=>props.navigation.navigate('1:1 문의사항')}/>
+              <LinkItem accent text="자주 묻는 질문" onPress={()=> props.navigation.navigate('자주묻는질문')}/>
+              <LinkItem text="사업 제휴 및 광고 문의" onPress={()=> props.navigation.navigate('사업 제휴 및 광고 문의')}/>
+              <LinkItem text="불편사항 신고하기" onPress={()=> props.navigation.navigate('불편사항 신고하기')}/>
+              <LinkItem text="사업자 정보" onPress={()=> props.navigation.navigate('사업자 정보')}/>
+            </View>
+            </View>
+            <Divider marginVertical={32}/>
+            <View style={{marginBottom:32}}>
+              <Typography fontSize={20}>약관 및 운영정책</Typography>
+              <View style={{marginTop:32}}>
+                <LinkItem text="약관 및 서비스 이용 동의" onPress={()=>props.navigation.navigate('약관 및 서비스 이용 동')}/>
+                <LinkItem text="개인정보 처리 방침" onPress={()=> props.navigation.navigate('개인정보처리방침')}/>          
+                <LinkItem text="버전 정보" onPress={()=> props.navigation.navigate('버전정보')}/>          
+              </View>
+          </View>
+        </Layout>
       </ScrollView>
     </View>
   )
@@ -169,17 +173,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'white'
+    backgroundColor: '#fff'
   },
-  profileContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 30,
+ 
+  titleIcon:{
+    width:24,
+    height:24,
+    position:"absolute",
+    right:24,
+    transform: [{translateY: 16}],
   },
   titleBox: {
-    height: 150,
-    alignItems: 'center',
-    paddingTop: 20,
+    
+    flexDirection:"row",
+    alignItems: 'flex-end',
+    justifyContent:"space-between"
+    
   },
   titleTopIcon : {
     width: 300,
@@ -188,13 +197,10 @@ const styles = StyleSheet.create({
   },
   titleMainTextBox: {
     flex:1,
-    width: 300,
+    alignItems: "flex-start",
     justifyContent: 'center'
   },
-  userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
+ 
   
   // linkbuttonBox
   linkbuttonBox: {
@@ -204,25 +210,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginTop:21,
   },
   linkbutton: {
     width: 100,
     height: 100,
     margin: 20,
     backgroundColor: '#FCFCFC',
-    shadowColor: 'gray',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 2, height: 2 },
+    shadowColor: 'gray',
   },
   linkbuttonContent: {
-    width: 55,
+    width: 66,
     height: 60,
     alignItems: 'center',
     justifyContent: 'center',
+
+    
+ 
   },
   image: {
     flex: 1,
@@ -232,24 +242,32 @@ const styles = StyleSheet.create({
   },
   historyBox: {
     marginTop: 16,
-    width: 342,
+   
+    width: "100%",
     height: 72,
     backgroundColor: '#E8726E',
     borderRadius: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 18
+    padding: 18,
+    
   },
   historyText: {
     flex: 1
   },
 
-  
+  profileEditBtn:{
+    flexDirection:"row", 
+    alignItems:"center",
+    borderBottomWidth: 1,
+    borderColor:"#595959",  
+  },
+ 
   // bottomContainer
   bottomContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: 20,
+    padding: 24,
     borderTopWidth: 1,
     borderTopColor: '#ddd',
   },
@@ -261,11 +279,9 @@ const styles = StyleSheet.create({
   bottomButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 35
   },
   bottomButtonText: {
     flex: 1,
-    marginLeft: 10,
     fontSize: 16,
     color: '#555',
   },
@@ -297,6 +313,11 @@ const styles = StyleSheet.create({
     color: 'gray',
     textDecorationLine:'underline',
     fontSize: 12
+  },
+  columnWrapper:{
+    flex:1,
+    justifyContent:"space-between",
+   
   }
 });
 

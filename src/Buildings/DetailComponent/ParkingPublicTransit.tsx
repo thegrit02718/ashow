@@ -19,22 +19,22 @@ export default function ParkingPublicTransit(props: any) {
         <Divider height={2} marginVertical={5}/>
         <View style={styles.textBox}>
           <Typography fontSize={14} color='#8B8B8B'>세대수</Typography>
-          <Typography fontSize={14}>{aptData.household}세대</Typography>
+          <Typography fontSize={14}>{aptData.houseHoldSum}세대</Typography>
         </View>
         <Divider height={1} marginVertical={5}/>
         <View style={styles.textBox}>
           <Typography fontSize={14} color='#8B8B8B'>총 주차대수</Typography>
-          <Typography fontSize={14}>{aptData.parking_all}대</Typography>
+          <Typography fontSize={14}>{aptData.parkingAll}대</Typography>
         </View>
         <Divider height={1} marginVertical={5}/>
         <View style={styles.textBox}>
           <Typography fontSize={14} color='#8B8B8B'>세대당 주차대수</Typography>
-          <Typography fontSize={14}><Text style={{color: '#E3514C'}}>{aptData.parking_inHouseHold}</Text>대</Typography>
+          <Typography fontSize={14}><Text style={{color: '#E3514C'}}>{aptData.parkingHouseHold}</Text>대</Typography>
         </View>
         <Divider height={1} marginVertical={5}/>
         <View style={styles.textBox}>
           <Typography fontSize={14} color='#8B8B8B'>주차장 형태</Typography>
-          <Typography fontSize={14}>{aptData.parking_form}주차장</Typography>
+          <Typography fontSize={14}>{aptData.parkingForm}주차장</Typography>
         </View>
 
         <View style={{marginVertical: 20}}></View>
@@ -47,16 +47,16 @@ export default function ParkingPublicTransit(props: any) {
           <Typography fontSize={12} color='#8B8B8B'>지하철</Typography>
         </View>
         <View style={styles.textBox}>
-          <Typography fontSize={14}>{aptData.pubTrans_subway}</Typography>
-          <Typography fontSize={14}>{aptData.pubTrans_subway_distance}</Typography>
+          <Typography fontSize={14}>{aptData.pubTransSubway}</Typography>
+          <Typography fontSize={14}>{aptData.pubTransSubwayDistance}</Typography>
         </View>
         <Divider height={1} marginVertical={5}/>
         <View style={styles.textBox}>
           <Typography fontSize={12} color='#8B8B8B'>고속철도</Typography>
         </View>
         <View style={styles.textBox}>
-          <Typography fontSize={14}>{aptData.pubTrans_train}</Typography>
-          <Typography fontSize={14}>{aptData.pubTrans_train_distance}</Typography>
+          <Typography fontSize={14}>{aptData.pubTransTrain}</Typography>
+          <Typography fontSize={14}>{aptData.pubTransTrainDistance}</Typography>
         </View>
     </View>
   );

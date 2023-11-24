@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef  } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, Image, Modal  } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Image, Modal  } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Typography } from '../../Components/Typography';
-import SelectDropdown from 'react-native-select-dropdown'
 import { Divider } from '../../Components/Divider';
 import AsyncGetItem from '../../AsyncGetItem'
 import FormatNumber from '../../Components/FormatNumber';
@@ -65,11 +63,11 @@ function CalculatorResult (props : any) {
   const taxDetail = [
     {taxName: "취득세", taxCost: 21220000, standard: "6억 초과 9억 이하 기준", imageHeight: 600, image: 1 },
     {taxName: "지방교육세", taxCost: 1660000, standard: "6억 초과 9억 이하 기준", imageHeight: 600, image: 2},
-    {taxName: "농어촌특별세", taxCost: 0, standard: "전용 85㎡ 비과세", imageHeight: 600, image: 3},
-    {taxName: "인지세", taxCost: 150000, standard: "1억 초과 10억 이하 기준", imageHeight: 600, image: 4},
-    {taxName: "증지세", taxCost: 15000, standard: null, imageHeight: 600, image: 5},
-    {taxName: "법무사 기본보수", taxCost: 0, standard: null, imageHeight: 600, image: 6},
-    {taxName: "국민주택채권 즉시매도가격", taxCost: 0, standard: null, imageHeight: 600, image: 7}
+    {taxName: "농어촌특별세", taxCost: 0, standard: "전용 85㎡ 비과세", imageHeight: 500, image: 3},
+    {taxName: "인지세", taxCost: 150000, standard: "1억 초과 10억 이하 기준", imageHeight: 300, image: 4},
+    {taxName: "증지세", taxCost: 15000, standard: null, imageHeight: 100, image: 5},
+    {taxName: "법무사 기본보수", taxCost: 0, standard: null, imageHeight: 150, image: 6},
+    {taxName: "국민주택채권 즉시매도가격", taxCost: 0, standard: null, imageHeight: 150, image: 7}
   ]
 
    return (
@@ -99,10 +97,10 @@ function CalculatorResult (props : any) {
 
       {/* notice 섹션 */}
       <View style={styles.section}>
-        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeight='normal'>
+        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeightIdx={2}>
           {asyncGetData.userNickName}님의 <Typography fontSize={24}>자금스케줄</Typography>이
         </Typography>
-        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeight='normal'>완성되었어요!</Typography>
+        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeightIdx={2}>완성되었어요!</Typography>
       </View>
 
       {/* 버튼 섹션 */}
@@ -187,14 +185,14 @@ function CalculatorResult (props : any) {
         <Typography fontSize={20}>필요 자금 총정리</Typography>
         <View style={{alignItems: 'center', padding: 20}}>
           <Image source={require('../../images/buildingsDetail/resulticon.png')} style={{marginVertical: 10}}/>
-          <Typography fontSize={16} fontWeight='normal' marginBottom={5}>
+          <Typography fontSize={16} fontWeightIdx={2} marginBottom={5}>
             <Typography fontSize={16}>{asyncGetData.userNickName}님</Typography>은 현재
           </Typography>
-          <Typography fontSize={16} fontWeight='normal' marginBottom={5}>
+          <Typography fontSize={16} fontWeightIdx={2} marginBottom={5}>
             자본금 <Typography fontSize={16}>{FormatNumber(props.route.params.capitalCost)}</Typography>으로
           </Typography>
-          <Typography fontSize={16} fontWeight='normal' marginBottom={5}>{props.route.params.aptDataName} 아파트를</Typography>
-          <Typography fontSize={16} fontWeight='normal' >분양받으실 수 있어요!</Typography>
+          <Typography fontSize={16} fontWeightIdx={2} marginBottom={5}>{props.route.params.aptDataName} 아파트를</Typography>
+          <Typography fontSize={16} fontWeightIdx={2} >분양받으실 수 있어요!</Typography>
         </View>
         <View style={{borderWidth:1, borderColor:'#DFDFDF', borderRadius:10, padding: 20}}>
           <View style={styles.textBox}>
@@ -207,12 +205,12 @@ function CalculatorResult (props : any) {
             <Typography fontSize={14}>{FormatNumber(props.route.params.loanCost)}</Typography>
           </View>
           <View style={styles.textBox}>
-            <Typography fontSize={14} color='#555' >필요 자본금 (취득세 포함)</Typography>
-            <Typography fontSize={14}>{FormatNumber(props.route.params.capitalCost)}</Typography>
-          </View>
-          <View style={styles.textBox}>
             <Typography fontSize={14} color='#555'>월 납입금</Typography>
             <Typography fontSize={14} color='#E0413B'>{FormatNumber(props.route.params.monthyCost)}</Typography>
+          </View>
+          <View style={styles.textBox}>
+            <Typography fontSize={14} color='#555' >필요 자본금 (취득세 포함)</Typography>
+            <Typography fontSize={14}>{FormatNumber(props.route.params.capitalCost)}</Typography>
           </View>
         </View>
       </View>
@@ -220,10 +218,13 @@ function CalculatorResult (props : any) {
       <View style={{marginVertical:10}}></View>
 
       {/* 총정리 섹션 */}
-      {/* <View style={styles.section}>
-        <Typography fontSize={20}>시기별 필요한 자본금</Typography>
+      <View style={styles.section}>
+        <Typography fontSize={20} marginBottom={10}>시기별 필요한 자본금</Typography>
+        <Typography fontSize={11} fontWeightIdx={2} color='#3D3D3D'>
+          필요 자본금을 그래프로 쉽게 확인하고, 상세 내역도 자세히 살펴보세요!
+        </Typography>
         <CapitalGraph />
-      </View> */}
+      </View>
 
       <Divider height={5} marginVertical={10}></Divider>
       
@@ -302,15 +303,12 @@ function CalculatorResult (props : any) {
             <Typography fontSize={12} color='#555' marginBottom={10}>잔금 납부 3~5일 전 미리 납부하실 세금을 확인하세요!</Typography>
           </View>
           <Divider height={1} marginVertical={10}/>
-          <View style={{alignItems:'center'}}>
-            <Typography color='#E8726E' fontSize={13} marginBottom={10}>[ 1가구 무주택자 1주택 구매 기준 ]</Typography>
-          </View>
-          
+          <View style={{marginBottom:20}}>
             {
               taxDetail.map((item : any, index : any)=>{
                 return (
                   <View style={styles.textBox3} key={index}>
-                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
                       <Typography fontSize={14} color='#333'>{item.taxName}</Typography>  
                       <TouchableOpacity 
                         onPress={()=>{props.navigation.navigate('TaxDetail', {data : item})
@@ -319,23 +317,11 @@ function CalculatorResult (props : any) {
                         <AntDesign name="questioncircleo" size={14} color="black" />
                       </TouchableOpacity>
                     </View>
-                    <View style={{alignItems:'flex-end'}}>
-                      <Typography fontSize={14} color='#1B1B1B'>{FormatNumber(item.taxCost)}</Typography>
-                      { item.standard ?
-                       <Typography fontSize={12} color='#6F6F6F'>{item.standard}</Typography>
-                       : null
-                      } 
-                    </View>
+                    <Typography fontSize={14} color='#1B1B1B'>{FormatNumber(item.taxCost)}</Typography>
                   </View>
                 )
               }) 
             }
-          <View style={{alignItems:'center'}}>
-            <View style={{height:40, borderWidth:1, borderColor:'#E8726E', flexDirection:'row', paddingHorizontal:15,
-                          alignItems:'center', justifyContent:'center', borderRadius:10}}>
-              <Typography color='#E8726E' fontSize={14}>법무사 추천받기</Typography>
-              <AntDesign name="right" size={14} color="#E8726E" style={{marginLeft:10}}/>
-            </View>
           </View>
           <Divider height={1} marginVertical={10}/>
           <View style={{alignItems:'center'}}>
@@ -388,11 +374,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 60
+    height: 40
   },
   menubox: {
     width: 90,
-    height: 20,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },

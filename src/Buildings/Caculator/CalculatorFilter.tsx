@@ -82,7 +82,7 @@ function CalculatorFilter (props : any) {
         <View style={{marginVertical: 10}}></View>
 
         <View style={styles.resultBox}>
-          <Typography fontSize={14} color='#1B1B1B' marginBottom={15} fontWeight='normal'>
+          <Typography fontSize={14} color='#1B1B1B' marginBottom={15} fontWeightIdx={2}>
             분양가는 <Typography fontSize={14} color='#1B1B1B'>최고가 기준</Typography>입니다.
           </Typography>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>

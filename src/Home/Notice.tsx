@@ -25,7 +25,7 @@ export default function HomeMain(props: any) {
       <View style={styles.noticeContainer}>
         <Image source={require('../images/home/noticeicon.png')} style={styles.noticeIcon}/>
         <View style={styles.noticeContent}>
-          <Typography fontWeight={'bold'} marginBottom={5}>{notices[currentNoticeIndex].title}</Typography>
+          <Typography marginBottom={5}>{notices[currentNoticeIndex].title}</Typography>
           <Typography fontSize={12} color={'gray'}>{notices[currentNoticeIndex].date}</Typography>
         </View>
       </View>

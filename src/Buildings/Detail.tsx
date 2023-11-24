@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, Image, Modal  } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Typography } from '../Components/Typography';
 import { Divider } from '../Components/Divider';
@@ -16,8 +18,18 @@ import Community from './DetailComponent/Community';
 import GiftContent from './DetailComponent/GiftContent';
 import axios from 'axios';
 import MainURL from "../../MainURL";
+import { useRoute } from '@react-navigation/native';
+import Loading from '../Loading';
+import MainImageURL from '../../MainImageURL';
+import ContackButtonModal from './DetailPage/ContactButtonModal';
+
 
 const Detail = (props : any) => {
+  
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  const route : any = useRoute();
+  const aptData = route.params.data;
 
   // AsyncGetData
   const [asyncGetData, setAsyncGetData] = useState<any>({});
@@ -31,101 +43,61 @@ const Detail = (props : any) => {
   };
 
   // getposts
-  const [posts, setposts] = useState<any>([]);
-    
-  const fetchPosts = () => {
-    axios.get(`${MainURL}/recruit/get`).then((res) => {
+  const [pyengInfo, setPyengInfo] = useState<any>([]);
+  const [pyengSelect, setPyengSelect] = useState<any>([]);
+  const [pyengOrMeter, setPyengOrMeter] = useState("평");
+
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.get(`${MainURL}/buildings/pyenginfo/${route.params.data.aptKey}`);
       let copy: any = [...res.data];
-      copy.reverse();
-      setposts(copy);
-    });
+      await new Promise((resolve : any) => {
+        setPyengInfo(copy);
+        resolve();
+      });
+      await new Promise((resolve : any) => {
+        setPyengSelect(copy[0]);
+        resolve();
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
-
+  
   useEffect(() => {
-    fetchPosts();
     asyncFetchData();
+    fetchPosts();
   }, []);
-
+  
   const menu = ["분양가", "자금스케줄", "혜택", "단지갤러리", "단지배치도", "주차 및 교통", "학군", "보육시설", "주변환경"]
-  const sumOption = 28000000
-  const sumPrice = 723000000
-
-  const priceInPyeng = [
-    {pyeng: '29평', household: 124, officialArea: 98, personalArea:77, ashowPrice: 695000000, discount: 236720000}, 
-    {pyeng: '32평A', household: 272, officialArea: 107, personalArea:84, ashowPrice: 805080000, discount: 236720000},
-    {pyeng: '32평B', household: 211, officialArea: 108, personalArea:84, ashowPrice: 806100000, discount: 236720000}
-  ]
-
-  const aptData = {
-    name : '만촌자이르네',
-    household: 607,
-    indate : '2023.1.',
-    address : '대구시 수성구 만촌동 1489',
-    price: 931720000,
-    discount_default: 232930000,
-    discount_griting: 1000000,
-    discount_firstUse: 1000000,
-    discount_member: 1000000,
-    discount_today: 790000,
-    option_balcony : 28000000,
-    option_midDoor : 1600000,
-    option_dishwasher : 900000,
-    option_oven : 800000,
-    parking_all : 808,
-    parking_inHouseHold : 1.33,
-    parking_form : '지상,지하',
-    pubTrans_subway : '담티역(대구2호선)',
-    pubTrans_subway_distance: '731m, 도보 11분',
-    pubTrans_train : '동대구KTX역(경부선)',
-    pubTrans_train_distance: '3.9km, 차량 14분 거리'
-
-  };
-
-  const option = [
-    { name : "발코니 확장 공사비", cost: 28000000 },
-    { name : "현관 중문", cost: 1600000 },
-    { name : "침실 붙박이장", cost: 1000000 },
-    { name : "식기 세척기", cost: 900000 },
-    { name : "광파오븐", cost: 800000 },
-  ]
-
-  const [pyengSelect, setPyengSelect] = useState(priceInPyeng[0].pyeng);
-
-  const [selectedOptions, setSelectedOptions] = useState(Array(option.length).fill(false));  
-  const [totalOptionCost, setTotalOptionCost] = useState(0);
-  const [selectedOptionNames, setSelectedOptionNames] = useState({});
-
-  
-  const optionSelection = (index : any) => {
-    const updatedSelections = [...selectedOptions];
-    updatedSelections[index] = !updatedSelections[index];
-    setSelectedOptions(updatedSelections);
-  
-    const selectedOptionNamesCopy = 
-      option
-        .filter((_, i) => updatedSelections[i])
-        .map((selectedOption) => (selectedOption.name));
-    setSelectedOptionNames(selectedOptionNamesCopy);
-  
-    const selectedOptionCosts = 
-      option
-        .filter((_, i) => updatedSelections[i])
-        .map((selectedOption) => selectedOption.cost);
-    const newTotalCost = selectedOptionCosts.reduce((acc, cost) => acc + cost, 0);
-    setTotalOptionCost(newTotalCost);
-  };
-
 
   const [button1, setButton1] = useState<boolean>(true)
   const [button2, setButton2] = useState<boolean>(false)
+  
+  const [isSelectedOptions, setIsSelectedOptions] = useState([false, false, false, false]);
 
 
+  // 평형 선택 모달
+  const [pyengSelectModalVisible, setPyengSelectModalVisible] = useState(false);
   const pyengSelectToggleModal = () => {
     setPyengSelectModalVisible(!pyengSelectModalVisible);
   };
-  const [pyengSelectModalVisible, setPyengSelectModalVisible] = useState(false);
+  
+
+  // 전화 버튼 모달
+  const [contactButtonModalVisible, setContactButtonModalVisible] = useState(false);
+  const contactButtonToggleModal = () => {
+    setContactButtonModalVisible(!contactButtonModalVisible);
+  };
+  
+  
 
   return (
+    loading 
+    ? 
+    <Loading />
+    :
     <View style={styles.container}>
       {/* 타이틀 섹션 ------------------------------------------------------------- */}
       <View style={styles.section}>
@@ -141,42 +113,47 @@ const Detail = (props : any) => {
           <View style={{ flex: 1, paddingHorizontal: 15 }}>
             <Typography fontSize={14} marginBottom={7}>{aptData.name}</Typography>
             <View style={{flexDirection: 'row'}}>
-              <Typography fontSize={12} >{aptData.household}세대 / </Typography>
-              <Typography fontSize={12} >{aptData.indate}입주</Typography>
+              <Typography fontSize={12} >{aptData.houseHoldSum}세대 / </Typography>
+              <Typography fontSize={12} >{aptData.inDate}입주</Typography>
             </View>
           </View>
           <View style={{width: 110, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            {/* <TouchableOpacity 
+            <TouchableOpacity 
               style={{}}
-              onPress={() => {}}
-              >
-              <Ionicons name="location-sharp" size={30} color="#E8726E" />
+              onPress={()=>{
+                props.navigation.navigate('LocationMap', {
+                  aptName : aptData.name, aptSitecontact : aptData.sitecontact, 
+                  aptPromotionSite : aptData.prometionSite, aptPromotioncontact : aptData.prometioncontact,
+                  addressData : `${aptData.addressCity} ${aptData.addressCounty} ${aptData.addressRest}`
+                })
+              }}
+            >
+              <Entypo name="location-pin" size={30} color="#E8726E" />
             </TouchableOpacity>
             <TouchableOpacity 
                 onPress={() => {}}
                 style={{}}>
-                <Feather name="share-2" size={30} color="black" />
+                <AntDesign name="sharealt" size={30} color="black" />
             </TouchableOpacity>
             <TouchableOpacity 
                 onPress={() => {}}
                 style={{}}>
                 <AntDesign name="staro" size={30} color="black" />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </View>
       </View>
 
       <ScrollView style={styles.container}>
-        
         {/* 서브타이틀 섹션 ------------------------------------------------------------- */}
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={require('../images/buildings/mainImage.png')} style={{width: '100%'}}/>
+        <View style={{width: '100%', height:400, alignItems: 'center', justifyContent: 'center'}}>
+          <Image source={{uri: `${MainImageURL}/app/images/buildings/apt${aptData.aptKey}/mainimage.png`}} style={{width: '100%', height:'100%', resizeMode:'cover'}}/>
         </View>    
-        <View style={styles.section}>  
+        <View style={styles.section}>
           <View style={{ justifyContent: 'center', alignItems: 'center'}}>
             <Typography fontSize={24} marginBottom={7}>{aptData.name}</Typography>
-            <Typography fontSize={14} marginBottom={7}>{aptData.household}세대 | {aptData.indate}입주</Typography>
-            <Typography fontSize={14} color='#8B8B8B'>{aptData.address}</Typography>  
+            <Typography fontSize={14} marginBottom={7}>{aptData.houseHoldSum}세대 | {aptData.inDate}입주</Typography>
+            <Typography fontSize={14} color='#8B8B8B'>{aptData.addressCity} {aptData.addressLocal} {aptData.addressRest}</Typography>  
           </View>
         </View>
 
@@ -205,18 +182,25 @@ const Detail = (props : any) => {
               <TouchableOpacity onPress={pyengSelectToggleModal}>
                 <View style={{width:88, height:40, borderWidth:1, borderColor:'#DFDFDF', flexDirection:'row',
                               borderRadius:10, justifyContent:'center', alignItems:'center'}}>
-                  <Typography fontSize={14}>{pyengSelect}</Typography>
+                  <Typography fontSize={14}>{pyengOrMeter === '평' ? pyengSelect.pyeng : pyengSelect.officialArea}</Typography>
                   <AntDesign name="down" size={15} color="#1B1B1B" style={{marginLeft: 5}}/>
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=>{ 
+                if (pyengOrMeter === '평' ) {
+                  setPyengOrMeter('㎡');
+                } else {
+                  setPyengOrMeter('평');
+                }
+            }}>
               <View style={[styles.selectBox, {width: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center'}]}>
-                <Typography fontSize={14} color='#1B1B1B' fontWeight='normal'>평</Typography>
+                <Typography fontSize={14} color='#1B1B1B' fontWeightIdx={2}>{pyengOrMeter}</Typography>
               </View>
             </TouchableOpacity>
           </View>
-          {/* 평형 선택 모달창 ------------------------------------------------------------- */}
+          {/* 평형 선택 모달창 ------------------------------------ */}
           <Modal
             animationType="slide"
             transparent={true}
@@ -224,19 +208,27 @@ const Detail = (props : any) => {
             onRequestClose={pyengSelectToggleModal}
           >
             <PyengSelectModal 
-              pyengSelectToggleModal={pyengSelectToggleModal} priceInPyeng={priceInPyeng}
+              pyengSelectToggleModal={pyengSelectToggleModal} pyengInfo={pyengInfo}
               setPyengSelect={setPyengSelect}
             />
           </Modal>
 
-          {/* 배치도 */}
+          {/* 배치도 ------------------------------------------------------------- */}
           <TouchableOpacity 
-            onPress={() => {}}
-            style={{alignItems: 'flex-start'}}>
-            <MaterialCommunityIcons name="image-search" size={25} color="black" />
+            onPress={() => {
+              props.navigation.navigate('GroundPlanDetail', {data : pyengSelect});
+            }}
+            style={{alignItems:'flex-end'}}
+          >
+            <View style={[styles.selectBox, {width: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center'}]}>
+              <Image source={require('../images/buildings/magnifyGlass.png')} style={{width: '90%', resizeMode:'contain'}}/>
+            </View>
           </TouchableOpacity>
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Image source={require('../images/buildings/groundPlan.png')} style={{width: '90%'}}/>
+          <View style={{width:'100%', height:300, alignItems: 'center', justifyContent: 'center'}}>
+            <Image 
+              source={{uri: `${MainImageURL}/app/images/buildings/apt${aptData.aptKey}/groundplan${pyengSelect.personalArea}.png`}} 
+              style={{width: '100%', height:'100%', resizeMode:'contain'}}
+            />
           </View>
 
         </View>
@@ -258,49 +250,44 @@ const Detail = (props : any) => {
               <AntDesign name={ button1 ? "up" : "down"} size={20} color="#ED9390" />
             </View>
           </TouchableOpacity>
-
           {
             button1 
             && 
-            <View style={{flex:1, borderWidth:1, borderColor: '#ED9390', borderRadius: 15, padding: 18, marginVertical: 5 }}>
+          <View style={{flex:1, borderWidth:1, borderColor: '#ED9390', borderRadius: 15, padding: 18, marginVertical: 5 }}>
             <View style={styles.textBox}>
               <Typography fontSize={14} >정상 판매 가격</Typography>
-              <Typography >{FormatNumber(aptData.price)}</Typography>
+              <Typography >{FormatNumber(pyengSelect.priceDefault)}</Typography>
             </View>
             <View style={styles.textBox}>
               <Typography fontSize={14} >기본 할인</Typography>
-              <Typography fontSize={14} >- {FormatNumber(aptData.discount_default)}</Typography>
+              <Typography fontSize={14} >- {FormatNumber(pyengSelect.discountDefault)}</Typography>
             </View>
             <View style={{height:24, flexDirection: 'row', alignItems: 'center', marginVertical: 5}}>
               <AntDesign name="staro" size={20} color="#F9DB7F" style={{marginRight: 5}}/>
               <Typography fontSize={14} color='#1B1B1B'>{asyncGetData.userNickName}님을 위해 아쇼가 준비한 특별 혜택</Typography>
             </View>
-            <View style={styles.textBox}>
+           <View style={styles.textBox}>
               <Typography fontSize={14} >첫 계약 축하 할인</Typography>
-              <Typography fontSize={14} >- {FormatNumber(aptData.discount_griting)}</Typography>
+              <Typography fontSize={14} >- {FormatNumber(pyengSelect.ashowDiscountGriting)}</Typography>
             </View>
             <Divider height={1} marginVertical={2}></Divider>
             <View style={styles.textBox}>
               <Typography fontSize={14} >아쇼 첫 이용 할인</Typography>
-              <Typography fontSize={14} >- {FormatNumber(aptData.discount_firstUse)}</Typography>
+              <Typography fontSize={14} >- {FormatNumber(pyengSelect.ashowDiscountFirstUse)}</Typography>
             </View>
             <Divider height={1} marginVertical={2}></Divider>
             <View style={styles.textBox}>
               <Typography fontSize={14} >아쇼 회원 할인</Typography>
-              <Typography fontSize={14} >- {FormatNumber(aptData.discount_member)}</Typography>
+              <Typography fontSize={14} >- {FormatNumber(pyengSelect.ashowDiscountMember)}</Typography>
             </View>
             <Divider height={1} marginVertical={2}></Divider>
             <View style={styles.textBox}>
               <Typography fontSize={14} >오늘 계약시 지원금</Typography>
-              <Typography fontSize={14} >- {FormatNumber(aptData.discount_today)}</Typography>
+              <Typography fontSize={14} >- {FormatNumber(pyengSelect.ashowDiscountToday)}</Typography>
             </View>
             <Divider height={1} marginVertical={2}></Divider>
             <View style={{height: 28, justifyContent: 'center', alignItems: 'center'}}>
-              <Typography fontSize={14} >
-                아쇼를 통해 총  <Text style={{fontSize:18, color: '#FC3C31' }}>
-                  {FormatNumber(aptData.discount_default)}
-                </Text>
-                할인 받았어요</Typography>
+              <Typography fontSize={14} >아쇼를 통해 총  <Text style={{fontSize:18, color: '#FC3C31' }}>{FormatNumber(pyengSelect.discountDefault + pyengSelect.ashowDiscountSum)}</Text>할인 받았어요</Typography>
             </View>
           </View>
           }
@@ -319,21 +306,24 @@ const Detail = (props : any) => {
             &&
             <View style={{flex:1, borderWidth:1, borderColor: '#ED9390', borderRadius: 15, padding: 18, marginVertical: 10}}>
               {
-                option.map((item, index)=>{
-                  const isSelected = selectedOptions[index];
+                isSelectedOptions.map((item:any, index:any)=>{
                   return (
                     <View key={index}>
-                      <TouchableOpacity onPress={() => optionSelection(index)}>
+                      <TouchableOpacity onPress={() => {
+                        const updatedSelections = [...isSelectedOptions];
+                        updatedSelections[index] = !updatedSelections[index];
+                        setIsSelectedOptions(updatedSelections);
+                      }}>
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                           <View style={{
                               width: 24, height: 24, borderRadius: 5, alignItems: 'center', justifyContent: 'center',
-                              backgroundColor : isSelected ? '#E8726E' : '#DFDFDF', 
+                              backgroundColor : isSelectedOptions[0] ? '#E8726E' : '#DFDFDF', 
                             }}>
                             <AntDesign name="check" size={18} color="#fff" />
                           </View>
                           <View style={styles.textBox2}>
-                            <Typography fontSize={14}>{item.name}</Typography>
-                            <Typography fontSize={14}>+ {FormatNumber(item.cost)}</Typography>
+                            {/* <Typography fontSize={14}>발코니 확장 공사비</Typography> */}
+                            {/* <Typography fontSize={14}>+ {FormatNumber(pyengSelect.optionBalcony)}</Typography> */}
                           </View>
                         </View>
                       </TouchableOpacity>
@@ -342,22 +332,23 @@ const Detail = (props : any) => {
                   )
                 })
               }
+              
             </View>
           }
           
           <Divider height={2} marginVertical={20}/>
           
           {/* 최종 금액 ------------------------------------------------------------- */}
-          <View>
+          {/* <View>
             <Typography fontSize={18}>{asyncGetData.userNickName}님의 최종 구매 가능 가격</Typography>
           </View>
           <View style={styles.textBox}>
             <Typography fontSize={14} color='#8B8B8B'>정상 판매가</Typography>
-            <Typography fontSize={14} color='#8B8B8B'>{FormatNumber(aptData.price)}</Typography>
+            <Typography fontSize={14} color='#8B8B8B'>{FormatNumber(aptData.priceDefault)}</Typography>
           </View>
           <View style={styles.textBox}>
             <Typography fontSize={14} color='#8B8B8B'>아쇼 할인</Typography>
-            <Typography fontSize={14} color='#8B8B8B'>- {FormatNumber(aptData.discount_default)}</Typography>
+            <Typography fontSize={14} color='#8B8B8B'>- {FormatNumber(aptData.discountDefault)}</Typography>
           </View>
           <View style={styles.textBox}>
             <Typography fontSize={14} color='#8B8B8B'>추가 옵션</Typography>
@@ -367,7 +358,7 @@ const Detail = (props : any) => {
           <View style={styles.textBox}>
             <Typography >최종 구매 가격</Typography>
             <Typography fontSize={20} color='#E0413B'>{FormatNumber(sumPrice)}</Typography>
-          </View>
+          </View> */}
         </View>
 
         <Divider height={8}/>
@@ -412,7 +403,7 @@ const Detail = (props : any) => {
             <Image source={require('../images/buildings/titleImage4.png')} style={styles.sectionTitleImage}/>
             <Typography fontSize={20}>단지 갤러리</Typography>  
           </View>
-          <Typography fontSize={12} fontWeight='normal'>이미지를 옆으로 넘기거나 탭해서 단지 갤러리를 확인해보세요!</Typography>
+          <Typography fontSize={12} fontWeightIdx={2}>이미지를 옆으로 넘기거나 탭해서 단지 갤러리를 확인해보세요!</Typography>
           <View style={{height: 300, marginVertical: 15}}>
             <ScrollView 
               horizontal = {true}
@@ -434,7 +425,7 @@ const Detail = (props : any) => {
             <Image source={require('../images/buildings/titleImage5.png')} style={styles.sectionTitleImage}/>
             <Typography fontSize={20}>단지 배치도</Typography>  
           </View>
-          <Typography fontSize={12} fontWeight='normal'>이미지를 탭해서 상세 배치도와 평면도를 확인해보세요!</Typography>
+          <Typography fontSize={12} fontWeightIdx={2}>이미지를 탭해서 상세 배치도와 평면도를 확인해보세요!</Typography>
           <View style={{height: 250, marginVertical: 15}}>
             <Image source={require('../images/buildings/arrangeImage.png')} style={{width: '100%', height: '100%', resizeMode: 'contain'}}/>
             <TouchableOpacity 
@@ -490,11 +481,37 @@ const Detail = (props : any) => {
           </View>
           <Neighborhood></Neighborhood>    
         </View>
-        
-        {/* 모달 백화면 커버창 */}
-        <View style={pyengSelectModalVisible ? styles.modalBackCover :  { display: 'none'}}></View>
 
+     
       </ScrollView>
+
+      {/* 전화 버튼 모달 */}
+      <TouchableOpacity 
+        style={{position:'absolute', right: 10, bottom: 10, }}
+        onPress={contactButtonToggleModal}
+      >
+        <View style={{width:56, height:56, backgroundColor:"#E8726E",
+                      borderRadius:28, alignItems:'center', justifyContent:'center'}}>
+          <FontAwesome name="phone" size={24} color="#fff"/>
+        </View>
+      </TouchableOpacity>
+      {/* 전화 버튼 모달창 ------------------------------------ */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={contactButtonModalVisible}
+        onRequestClose={contactButtonToggleModal}
+      >
+        <ContackButtonModal 
+          contactButtonToggleModal={contactButtonToggleModal}
+          sitePhone={aptData.sitePhone}
+        />
+      </Modal>
+
+      {/* 모달 백화면 커버창 */}
+      <View style={pyengSelectModalVisible ? styles.modalBackCover :  { display: 'none'}}></View>
+      <View style={contactButtonModalVisible ? styles.modalBackCover :  { display: 'none'}}></View>
+
     </View>
   );
 };

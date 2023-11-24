@@ -80,8 +80,8 @@ android {
         applicationId "com.ashow.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.0.10"
+        versionCode 15
+        versionName "1.1.5"
     }
     signingConfigs {
         release {
@@ -122,6 +122,7 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     implementation("com.kakao.sdk:v2-user:2.15.0")
+    implementation("com.naver.maps:map-sdk:3.17.0")
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {

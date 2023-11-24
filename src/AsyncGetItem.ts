@@ -6,11 +6,12 @@ const AsyncGetItem = async () => {
   try {
     const refreshToken : string | null = await AsyncStorage.getItem('token');
     const userAccount : string | null = await AsyncStorage.getItem('account');
-    const userName : string | null = await AsyncStorage.getItem('name');
     const userNickName : string | null = await AsyncStorage.getItem('nickname');
     const userURL : string | null = await AsyncStorage.getItem('URL');
+    const city : string | null = await AsyncStorage.getItem('city');
+    const county : string | null = await AsyncStorage.getItem('county');
     return {
-      refreshToken, userAccount, userName, userNickName, userURL
+      refreshToken, userAccount, userNickName, userURL, city, county
     }
     
   } catch (error) {

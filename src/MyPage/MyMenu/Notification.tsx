@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
 import MainURL from '../../../MainURL';
 import AsyncGetItem from '../../AsyncGetItem'
+import { SubTitle } from '../../Components/SubTitle';
 
 function Notification (props : any) {
 
@@ -36,6 +37,7 @@ function Notification (props : any) {
 
   return (
     <ScrollView style={styles.container}>
+      <SubTitle title='알림' navigation={props.navigation}/>
       <Text style={{fontWeight: 'bold', fontSize: 20, margin: 15}}>오늘</Text>
       {todayNotifi?.length > 0 ? (
         todayNotifi?.map((item : any, index : any) => (

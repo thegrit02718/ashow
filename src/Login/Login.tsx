@@ -13,6 +13,7 @@ import GoogleWebClientID from "./GoogleWebClientID";
 
 export default function Login (props : any) {
 
+  // 카카오 로그인
   const signInWithKakao = async (): Promise<void> => {
     try {
       const token = await login();
@@ -22,7 +23,7 @@ export default function Login (props : any) {
           })
           .then((res: any)=>{
             if (res.data.isUser === true) {
-              AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userName, res.data.userNickName, res.data.userURL);
+              AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userNickName, res.data.userURL, res.data.city, res.data.county);
               props.navigation.replace('Navi_Main');
             } else if (res.data.isUser === false) {
               props.navigation.navigate("Logister", {data: res.data});
@@ -55,7 +56,7 @@ export default function Login (props : any) {
         })
         .then((res: any)=>{
           if (res.data.isUser === true) {
-            AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userName, res.data.userNickName, res.data.userURL);
+            AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userNickName, res.data.userURL, res.data.city, res.data.county);
             props.navigation.replace('Navi_Main');
           } else if (res.data.isUser === false) {
             props.navigation.navigate("Logister", {data: res.data});
@@ -65,14 +66,6 @@ export default function Login (props : any) {
         });
     }
   };
-
-  // // 공지
-  // const handelAction = () => {
-  //   Alert.alert('정말 네이버로 로그인 하시겠습니까?', '네이버로 로그인시, 카카오톡 채널을 통한 알림을 받아볼 수 없습니다.', [
-  //     { text: '네이버로 로그인', onPress: () => signInWithNaver() },
-  //     { text: '카카오로 로그인', onPress: () => signInWithKakao() }
-  //   ]);
-  // };
 
   // Apple 로그인
   async function appleLoginButtonPress() {
@@ -95,7 +88,7 @@ export default function Login (props : any) {
         })
         .then((res: any)=>{
           if (res.data.isUser === true) {
-            AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userName, res.data.userNickName, res.data.userURL);
+            AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userNickName, res.data.userURL, res.data.city, res.data.county);
             props.navigation.replace('Navi_Main');
           } else if (res.data.isUser === false) {
             props.navigation.navigate("Logister", {data: res.data});
@@ -126,7 +119,7 @@ export default function Login (props : any) {
           })
           .then((res: any)=>{
             if (res.data.isUser === true) {
-              AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userName, res.data.userNickName, res.data.userURL);
+              AsyncSetItem(res.data.refreshToken, res.data.userAccount, res.data.userNickName, res.data.userURL, res.data.city, res.data.county);
               props.navigation.replace('Navi_Main');
             } else if (res.data.isUser === false) {
               props.navigation.navigate("Logister", {data: res.data});
@@ -150,14 +143,6 @@ export default function Login (props : any) {
       <View style={styles.emptyBox}>
       </View>
 
-      <TouchableOpacity 
-            style={styles.loginButtonSocial}
-            onPress={()=>{
-              props.navigation.replace('Navi_Main');
-            }}>
-              <Text style={styles.loginButtonText}>데모 버전 로그인</Text>
-      </TouchableOpacity>
-
       <View style={styles.mainBox}>
         <View style={styles.mainBoxImg}>
           <Image source={require('../images/login/logo.png')}/>
@@ -168,9 +153,7 @@ export default function Login (props : any) {
           <Text style={styles.mainBoxText_text}>혜택과 다양한 정보를 확인하세요</Text>
         </View>
       </View>
-
       
-
       <View style={styles.buttonBox}>
 
         <TouchableOpacity 

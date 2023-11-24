@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, Platform, Image } from "react-native";
+import { StyleSheet, Platform, Image, Alert } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import Navi_Home from "./Navi_Home";
 import Navi_Guide from "./Navi_Guide";
@@ -27,18 +27,6 @@ export default function Main() {
       return
     }
   })
-
-  // AsyncGetData
-  const [asyncGetData, setAsyncGetData] = useState<any>({});
-  const asyncFetchData = async () => {
-    try {
-      const data = await AsyncGetItem();
-      setAsyncGetData(data);
-      takeFireBaseToken(data?.userAccount)
-    } catch (error) {
-      console.error(error);
-    }
-  };
   
   // firebase notification 토큰 발급 후 저장
   async function takeFireBaseToken(account : string | null | undefined) {
@@ -49,12 +37,21 @@ export default function Main() {
         token : token, userAccount: account
       })
       .then((res) => {
-        console.log(res.data);
+        console.log('savefirebasetoken', Platform.OS, res.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }
+  
+  const asyncFetchData = async () => {
+    try {
+      const data = await AsyncGetItem();
+      takeFireBaseToken(data?.userAccount)
+    } catch (error) {
+      console.error(error);
+    }
+  };
      
   useEffect(()=>{
     asyncFetchData();

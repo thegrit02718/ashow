@@ -59,6 +59,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NMFClientId</key>
+	<string>ejocs5mnxg</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -74,9 +76,6 @@
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Montserrat-VariableFont_wght.ttf</string>
-		<string>DancingScript-VariableFont_wght.ttf</string>
-		<string>DoHyeon-Regular.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
@@ -93,6 +92,10 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
+		<string>Fonts/Pretendard-Bold.ttf</string>
+		<string>Fonts/Pretendard-Regular.ttf</string>
+		<string>Fonts/Pretendard-Light.ttf</string>
+		<string>Fonts/Pretendard-Thin.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import axios from 'axios';
+import MainURL from "../../MainURL";
+import { Typography } from '../Components/Typography';
 
 function Logister (props : any) {
 
@@ -23,9 +26,6 @@ function Logister (props : any) {
   }, [])
 
 
-  const [refreshToken, setRefreshToken] = useState('');
-  const [userAccount, setUserAccount] = useState('');
-
   const [userNickName, setUserNickName] = useState('');
   const [isUserNickName, setIsUserNickName] = useState<boolean>(true);
   const [errorMessageNickName, setErrorMessageNickName] = useState<string>('');
@@ -39,7 +39,7 @@ function Logister (props : any) {
 
     if (text.length >= 2 && text.length <= 10 && text !== '') {
       setIsUserNickName(true)
-      setErrorMessageNickName('사용 가능한 닉네임입니다');
+      setErrorMessageNickName('올바른 형식의 닉네임입니다');
     } else {
       setIsUserNickName(false)
       setErrorMessageNickName('닉네임은 최소 2자 이상 10자 이하로 사용 가능합니다');
@@ -52,10 +52,33 @@ function Logister (props : any) {
     setErrorMessageNickName('');
   };
 
-  const moveAgreePage = () => {
+
+  const isValidUserName = async ()=>{
+    try{
+      if (userNickName !== '') {
+        const res = await axios.post(`${MainURL}/login/nicknamecheck`, {
+          userNickName : userNickName
+        });
+        console.log(res.data);
+        if (res.data) {
+          setErrorMessageNickName('이미 사용 중입니다. 다른 닉네임을 시도해 주세요.');
+          setIsUserNickName(false);
+        } else {
+          setErrorMessageNickName('사용 가능한 닉네임입니다.');
+          setIsUserNickName(true);
+        }
+      } else {
+        setErrorMessageNickName('빈칸을 입력해주세요');
+      }
+    } catch (error){
+        console.log(error);
+    }
+  }
+
+  const moveResidencePage = () => {
     if (userNickName) {
       const updatedData = { ...routeData, nickName: userNickName };
-      props.navigation.navigate('Agree', { data: updatedData, progressValue: 50 });
+      props.navigation.navigate('ResidenceSelect', { data: updatedData });
     } else {
       Alert.alert('빈칸을 입력해주세요');
     }
@@ -63,6 +86,11 @@ function Logister (props : any) {
 
   return (
     <View style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex:1}}
+      >
+      <ScrollView style={{flex:1}}>
       <View style={styles.progressBarBox}>
         <View style={styles.progressBar}>
           <View style={styles.progress}></View>
@@ -78,11 +106,12 @@ function Logister (props : any) {
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
         <View style={styles.inputContainer}>
-          <Text style={styles.titleTextBox}>
-            안녕하세요!{"\n"}아쇼에서 사용하실{"\n"}
-            <Text style={styles.boldText}>닉네임</Text>
-            을 입력해주세요.
-          </Text>
+          <Typography fontSize={24} marginBottom={5} fontWeightIdx={2}>안녕하세요!</Typography>
+          <Typography fontSize={24} marginBottom={5} fontWeightIdx={2}>아쇼에서 사용하실</Typography>
+          <Typography fontSize={24} marginBottom={30}  fontWeightIdx={2} >
+            <Typography fontSize={24}>닉네임</Typography>을 입력해주세요.
+          </Typography>
+         
 
           {/* 닉네임 */}
           <View style={{ height : 150 }}>
@@ -91,8 +120,10 @@ function Logister (props : any) {
               <TextInput
                 style={styles.inputFieldText}
                 placeholder="예) 아쇼123"
+                placeholderTextColor="#8C8C8C"
                 onChangeText={onChangeUserNickName}
                 defaultValue={userNickName}
+                onEndEditing={isValidUserName}
               />
               {userNickName ?
               <View style={styles.inputFieldButton}>
@@ -120,15 +151,17 @@ function Logister (props : any) {
             </View>
           </View>
           <TouchableOpacity 
-            onPress={moveAgreePage}
+            onPress={moveResidencePage}
             style={
-              userNickName ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
+              isUserNickName ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
               : [styles.nextBtnBox, { backgroundColor: '#F0A3A1'}] 
             }>
             <Text style={styles.nextBtnText}>다음</Text>
           </TouchableOpacity>
         </View>
       </View> 
+      </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -147,19 +180,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFEF',    
   },
   progress: {
-    width: '50%',
+    width: '33%',
     height: 6,
     backgroundColor: '#F0A3A1',
   },
   mainContainer: {
-    flex: 1,
     justifyContent: 'center',
     padding: 24,
   },
   backButton: {
     width: 50,
     height: 50,
-    marginTop: 14,
     marginBottom: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -168,19 +199,6 @@ const styles = StyleSheet.create({
     flex: 5,
     flexDirection: 'column',
     justifyContent: 'space-between',
-  },
-  titleTextBox: {
-    justifyContent: 'center',
-    fontSize: 24,
-    fontWeight: '400',
-    lineHeight: 32,
-    marginBottom: 30,
-  },
-  boldText: {
-    fontWeight: '600',
-  },
-  inputFieldBox: {
-        
   },
   inputFieldTitle: {
     height: 30,

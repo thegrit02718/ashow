@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 24,
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
+    backgroundColor:'#fff'
   },
   inputContainer: {
     flex: 1,

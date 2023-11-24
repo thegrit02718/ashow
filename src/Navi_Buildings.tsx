@@ -9,6 +9,8 @@ import CalculatorSecond from './Buildings/Caculator/CalculatorSecond';
 import CalculatorResult from './Buildings/Caculator/CalculatorResult';
 import CalculatorFilter from './Buildings/Caculator/CalculatorFilter';
 import TaxDetail from "./Buildings/CalculatorComponent/TaxDetail";
+import LocationMap from "./Buildings/DetailPage/LocationMap";
+import GroundPlanDetail from "./Buildings/DetailPage/GroundPlanDetail";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,11 +24,13 @@ function Navi_Buildings(props : any) {
       <Stack.Screen name={"Main"} component={Main} />
       <Stack.Screen name={"Detail"} component={Detail}/>
       <Stack.Screen name={"단지 배치도"} component={ArrangeImageWebView} />
-      <Stack.Screen options={{headerShown: false}} name={'CalculatorFirst'} component={CalculatorFirst}/>
-      <Stack.Screen options={{headerShown: false}} name={'CalculatorSecond'} component={CalculatorSecond}/>
-      <Stack.Screen options={{headerShown: false}} name={'CalculatorResult'} component={CalculatorResult}/>
-      <Stack.Screen options={{headerShown: false}} name={'CalculatorFilter'} component={CalculatorFilter}/>
-      <Stack.Screen options={{headerShown: false}} name={'TaxDetail'} component={TaxDetail}/>
+      <Stack.Screen name={'CalculatorFirst'} component={CalculatorFirst}/>
+      <Stack.Screen name={'CalculatorSecond'} component={CalculatorSecond}/>
+      <Stack.Screen name={'CalculatorResult'} component={CalculatorResult}/>
+      <Stack.Screen name={'CalculatorFilter'} component={CalculatorFilter}/>
+      <Stack.Screen name={'TaxDetail'} component={TaxDetail}/>
+      <Stack.Screen name={'LocationMap'} component={LocationMap}/>
+      <Stack.Screen name={'GroundPlanDetail'} component={GroundPlanDetail}/>
     </Stack.Navigator>
   );
 }

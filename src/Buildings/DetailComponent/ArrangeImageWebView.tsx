@@ -28,7 +28,7 @@ export default function ArrangeImageWebView (props : any) {
         </View>
       </View>
       <View style={{alignItems: 'center', marginVertical: 10}}>
-        <Typography fontWeight='normal'>이미지를 확대 및 축소하여 <Text style={{fontWeight: 'bold'}}>단지별 평면도</Text>와 <Text style={{fontWeight: 'bold'}}>향</Text>을 자세히 확인해보세요.</Typography>
+        <Typography fontWeightIdx={2}>이미지를 확대 및 축소하여 <Text style={{fontWeight: 'bold'}}>단지별 평면도</Text>와 <Text style={{fontWeight: 'bold'}}>향</Text>을 자세히 확인해보세요.</Typography>
       </View>
       <View style={{flex:1}}>
         <WebView

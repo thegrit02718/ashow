@@ -36,5 +36,8 @@
           <data android:host="oauth" android:scheme="kakao5e903717a4966f9f33d70c77b3510381"/>
         </intent-filter>
       </activity>
+       <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="ejocs5mnxg" />
     </application>
 </manifest>

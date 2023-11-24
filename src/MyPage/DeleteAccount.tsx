@@ -39,8 +39,7 @@ function DeleteAccount (props: any) {
   const deleteAccount = async () => {
     axios
       .post(`${MainURL}/login/deleteaccount`, {
-        refreshToken: asyncGetData.refreshToken,
-        userName: asyncGetData.userName, userNickName: asyncGetData.userNickName
+        userAccount: asyncGetData.userAccount, userNickName: asyncGetData.userNickName
       })
       .then((res) => {
         if (res.data === true) {

@@ -39,9 +39,9 @@ function CalculatorFirst (props : any) {
 
       {/* notice 섹션 --------------------------------------- */}
       <View style={styles.section}>
-        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeight='normal'>아쇼가</Typography>
-        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeight='normal'>원활한 아파트 분양을 위해</Typography>
-        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeight='normal'><Text style={{fontWeight: 'bold'}}>자금 스케줄</Text>을 만들어 드릴게요!</Typography>
+        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeightIdx={2}>아쇼가</Typography>
+        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeightIdx={2}>원활한 아파트 분양을 위해</Typography>
+        <Typography fontSize={24} color='#3D3D3D' marginBottom={10} fontWeightIdx={2}><Text style={{fontWeight: 'bold'}}>자금 스케줄</Text>을 만들어 드릴게요!</Typography>
       </View>
 
       {/* 평형 선택 섹션 --------------------------------------- */}
@@ -58,7 +58,7 @@ function CalculatorFirst (props : any) {
             <AntDesign name="questioncircleo" size={14} color="black" />
           </TouchableOpacity>
         </View>
-        <Typography fontSize={14} marginBottom={10} fontWeight='600'>
+        <Typography fontSize={14} marginBottom={10} fontWeightIdx={1}>
           세금은 <Typography fontSize={14}>1가구 무주택자가 1주택 구매시 기준</Typography>으로 적용되었어요.
         </Typography>
       </View>
@@ -75,7 +75,7 @@ function CalculatorFirst (props : any) {
       {/* 옵션 선택 섹션  --------------------------------------- */}
       <View style={styles.section}>
         <View style={{marginTop: 10}}>
-          <Typography fontSize={14} color='#333' fontWeight='normal'>
+          <Typography fontSize={14} color='#333' fontWeightIdx={2}>
             <Text style={{fontWeight: 'bold', color: '#555'}}>추가 옵션</Text>을 선택하시겠어요?
           </Typography>
         </View>
@@ -97,7 +97,7 @@ function CalculatorFirst (props : any) {
             <Typography fontSize={24} color='#E0413B'>{FormatNumber(totalCost)}</Typography>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5}}>
-            <Typography fontSize={12} color='#333' fontWeight='normal'>
+            <Typography fontSize={12} color='#333' fontWeightIdx={2}>
               분양가는 <Text style={{fontWeight: 'bold', color: '#555'}}>최고가 기준</Text>입니다.
               </Typography>
           </View>

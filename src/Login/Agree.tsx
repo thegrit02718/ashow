@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Alert, Animated } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Alert, Linking } from 'react-native';
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
@@ -16,9 +16,10 @@ export default function Agree (props : any) {
       const routeData = props.route.params.data;
       setRefreshToken(routeData.refreshToken);
       setUserAccount(routeData.email);
-      setUserName(routeData.name);
       setUserNickName(routeData.nickName);
       setUserURL(routeData.userURL);
+      setCity(routeData.city);
+      setCounty(routeData.county);
     }
   }
 
@@ -28,28 +29,42 @@ export default function Agree (props : any) {
 
   const [refreshToken, setRefreshToken] = useState('');
   const [userAccount, setUserAccount] = useState('');
-  const [userName, setUserName] = useState('');
   const [userNickName, setUserNickName] = useState('');
   const [userURL, setUserURL] = useState('');
+  const [city, setCity] = useState('');
+  const [county, setCounty] = useState('');
 
-  const [isCheck1, setIsCheck1] = useState<boolean>(false);
-  const [isCheck2, setIsCheck2] = useState<boolean>(false);
-  const [isCheck3, setIsCheck3] = useState<boolean>(false);
-  const [isCheck4, setIsCheck4] = useState<boolean>(false);
-  const [isCheck5, setIsCheck5] = useState<boolean>(false);
+  const [isCheck1_upAge14, setIsCheck1_upAge14] = useState<boolean>(false);
+  const [isCheck2_usingPolicy, setIsCheck2_usingPolicy] = useState<boolean>(false);
+  const [isCheck3_personalInfo, setIsCheck3_personalInfo] = useState<boolean>(false);
+  const [isCheck4_contentsRestrict, setIsCheck4_contentsRestrict] = useState<boolean>(false);
+  const [isCheck5_infoToOthers, setIsCheck5_infoToOthers] = useState<boolean>(false);
   const [isAllCheck, setIsAllCheck] = useState<boolean>(false);
   
-  const AgreeBox = (props: { text: string, view: string, isCheck: boolean, setIsCheck: any }) => {
+  const AgreeBox = (props: { choice: string, text: string, view: string, isCheck: boolean, setIsCheck: any, link: string }) => {
     return (
       <View style={styles.checkboxItem}>
         <TouchableOpacity onPress={()=>{props.setIsCheck(!props.isCheck)}}>
-          { props.isCheck ? <AntDesign name="checkcircle" size={24} color="black" style={styles.checkboxicon} />
-          : <AntDesign name="checkcircleo" size={20} color="black" style={styles.checkboxicon} /> }
+          { props.isCheck ? <AntDesign name="checkcircle" size={24} color="#333" style={styles.checkboxicon} />
+          : <AntDesign name="checkcircle" size={20} color="#8C8C8C" style={styles.checkboxicon} /> }
         </TouchableOpacity>
-        <Text style={styles.checkboxText}>{props.text}</Text>
-        <TouchableOpacity style={styles.checkDetail}>
-          <Text style={styles.checkDetailText}>{props.view}</Text>
-        </TouchableOpacity>
+        <View style={styles.checkboxContent}>
+          <Text style={[styles.checkboxText, {color: '#6F6F6F'}]}>{props.text}</Text>
+          <Text style={[styles.checkboxText, {color: '#B33936'}]}> {props.choice}</Text>
+          {
+            props.view
+            && 
+            <TouchableOpacity 
+              style={styles.checkDetail}
+              onPress={()=>{
+                Linking.openURL(props.link);
+              }}  
+            >
+              <Text style={styles.checkDetailText}>{props.view}</Text>
+            </TouchableOpacity>
+          }
+          
+        </View>
       </View>
     ) 
   }
@@ -57,35 +72,40 @@ export default function Agree (props : any) {
   const handleAllAgree = () => {
     if (isAllCheck === true) {
       setIsAllCheck(false)
-      setIsCheck1(false);
-      setIsCheck2(false);
-      setIsCheck3(false);
-      setIsCheck4(false);
-      setIsCheck5(false);
+      setIsCheck1_upAge14(false);
+      setIsCheck2_usingPolicy(false);
+      setIsCheck3_personalInfo(false);
+      setIsCheck4_contentsRestrict(false);
+      setIsCheck5_infoToOthers(false);
     } else {
       setIsAllCheck(true);
-      setIsCheck1(true);
-      setIsCheck2(true);
-      setIsCheck3(true);
-      setIsCheck4(true);
-      setIsCheck5(true);
+      setIsCheck1_upAge14(true);
+      setIsCheck2_usingPolicy(true);
+      setIsCheck3_personalInfo(true);
+      setIsCheck4_contentsRestrict(true);
+      setIsCheck5_infoToOthers(true);
     }
   };
 
   // 회원가입하기
   const handleSignup = () => {
-    if (userAccount !== null ) {
+    
+    if (isCheck1_upAge14 && isCheck2_usingPolicy && isCheck3_personalInfo && isCheck4_contentsRestrict) {
       axios
         .post(`${MainURL}/login/logisterdo`, {
           userAccount: userAccount,
-          userName: userName,
           userNickName: userNickName,
-          userURL: userURL
+          userURL: userURL,
+          checkUpAge14: isCheck1_upAge14,
+          checkUsingPolicy: isCheck2_usingPolicy,
+          checkPersonalInfo: isCheck3_personalInfo,
+          checkContentsRestrict: isCheck4_contentsRestrict,
+          checkInfoToOthers: isCheck5_infoToOthers,
         })
         .then((res) => {
           console.log(res.data);
-          if (res.data === userAccount) {
-            AsyncSetItem(refreshToken, userAccount, userName, userNickName, userURL);
+          if (res.data) {
+            AsyncSetItem(refreshToken, userAccount, userNickName, userURL, city, county);
             props.navigation.navigate('Result', {nickName : userNickName});
           } else {
             Alert.alert('다시 시도해 주세요.');
@@ -95,7 +115,7 @@ export default function Agree (props : any) {
           console.log('실패함');
         });
     } else {
-      Alert.alert('빈칸을 입력해주세요');
+      Alert.alert('필수 약관에 동의해주세요.');
     }
   };
 
@@ -120,13 +140,14 @@ export default function Agree (props : any) {
             마지막으로,{'\n'}아쇼 서비스 제공을 위해{'\n'}
             <Text style={styles.boldText}>이용약관에 동의</Text>해주세요.
           </Text>
-          <View style={styles.inputFieldBox}>
-            
-            <AgreeBox text={'만 14세 이상입니다. (필수)'} view={''} isCheck={isCheck1} setIsCheck={setIsCheck1}/>
-            <AgreeBox text={'위치정보 서비스 이용 약관에 동의합니다. (필수)'} view={'보기'} isCheck={isCheck2} setIsCheck={setIsCheck2}/>
-            <AgreeBox text={'개인정보 수집 및 이용에 동의합니다. (필수)'} view={'보기'} isCheck={isCheck3} setIsCheck={setIsCheck3}/>
-            <AgreeBox text={'개인정보 제3자 제공에 동의합니다.'} view={''} isCheck={isCheck4} setIsCheck={setIsCheck4}/>
-            <AgreeBox text={'부동산 정보와 혜택 알림 수신에 동의합니다.'} view={''} isCheck={isCheck5} setIsCheck={setIsCheck5}/>
+          <View style={{marginTop:10}}>
+            <AgreeBox choice={'[필수]'} text={'만 14세 이상입니다.'} view={''} isCheck={isCheck1_upAge14} setIsCheck={setIsCheck1_upAge14}link=''/> 
+            <AgreeBox choice={'[필수]'} text={'위치정보 서비스 이용 약관에 동의합니다.'} view={'보기'} isCheck={isCheck2_usingPolicy} setIsCheck={setIsCheck2_usingPolicy} 
+              link='https://www.ashow.co.kr/usingpolicy.html'/>
+            <AgreeBox choice={'[필수]'} text={'개인정보 수집 및 이용에 동의합니다.'} view={'보기'} isCheck={isCheck3_personalInfo} setIsCheck={setIsCheck3_personalInfo} 
+              link='http://www.ashow.co.kr/personalinfo.html'/>
+            <AgreeBox choice={'[필수]'} text={'유해 컨텐츠에 대한 제재에 동의합니다.'} view={''} isCheck={isCheck4_contentsRestrict} setIsCheck={setIsCheck4_contentsRestrict} link=''/>
+            <AgreeBox choice={'[선택]'} text={'개인정보 제3자 제공에 동의합니다.'} view={''} isCheck={isCheck5_infoToOthers} setIsCheck={setIsCheck5_infoToOthers} link=''/>
             
             <View style={styles.divider}></View>
 
@@ -134,8 +155,8 @@ export default function Agree (props : any) {
               <TouchableOpacity 
                   onPress={handleAllAgree}
                 >
-                { isAllCheck ? <AntDesign name="checkcircle" size={24} color="black" style={styles.checkboxicon} />
-                : <AntDesign name="checkcircleo" size={20} color="black" style={styles.checkboxicon} /> }
+                { isAllCheck ? <AntDesign name="checkcircle" size={24} color="#333" style={styles.checkboxicon} />
+                : <AntDesign name="checkcircle" size={20} color="#8C8C8C" style={styles.checkboxicon} /> }
               </TouchableOpacity>
               <Text style={styles.allCheckboxText}>모든 약관에 동의합니다.</Text>
             </View>      
@@ -147,7 +168,8 @@ export default function Agree (props : any) {
         <TouchableOpacity 
           onPress={handleSignup}
           style={
-            isAllCheck ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
+            isCheck1_upAge14 && isCheck2_usingPolicy && isCheck3_personalInfo && isCheck4_contentsRestrict
+            ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
             : [styles.nextBtnBox, { backgroundColor: '#F0A3A1'}]
           }
           >
@@ -184,7 +206,6 @@ const styles = StyleSheet.create({
   backButton: {
     width: 50,
     height: 50,
-    marginTop: 14,
     marginBottom: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -203,24 +224,20 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: '600',
   },
-  inputFieldBox: {
-    height: 300,
-    marginBottom: 30,
-  },
-  checkboxGroup: {
-    marginTop: 16,
-  },
   checkboxItem: {
     height: 30,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 5,
+  },
+  checkboxContent: {
+    flexDirection: 'row',
+    marginVertical: 3
   },
   checkboxicon: {
     marginRight: 10
   },
   checkboxText: {
-    color: '#6F6F6F',
     fontSize: 14,
     letterSpacing: -0.075,
   },

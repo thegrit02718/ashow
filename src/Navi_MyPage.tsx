@@ -11,19 +11,34 @@ import Policy from "./MyPage/Notice/Policy";
 import FavorList from "./MyPage/MyMenu/FavorList";
 import History from "./MyPage/MyMenu/History";
 import TalkList from "./MyPage/MyMenu/TalkList";
-
+import EditProfile from "./MyPage/EditProfile";
+import NotificationDetail from "./MyPage/MyMenu/NotificationDetail";
 
 const Stack = createNativeStackNavigator();
 
 function Navi_MyPage() {
   return (
-    <Stack.Navigator >
-      <Stack.Screen options={{headerShown: false}} name={'메인'} component={MyPageMain}/>
-      <Stack.Screen options={{headerShown: false}} name={'FavorList'} component={FavorList}/>
-      <Stack.Screen options={{headerShown: false}} name={'History'} component={History}/>
-      <Stack.Screen options={{headerShown: false}} name={'TalkList'} component={TalkList}/>
-      <Stack.Screen name={'알림'} component={Notification}/>
-      <Stack.Screen name={'회원 탈퇴'} component={DeleteAccount}/>
+    <Stack.Navigator  screenOptions={{headerShown: false}}>
+      <Stack.Screen name={'메인'} component={MyPageMain}/>
+      <Stack.Screen name={'FavorList'} component={FavorList}/>
+      <Stack.Screen name={'History'} component={History}/>
+      <Stack.Screen name={'TalkList'} component={TalkList}/>
+      <Stack.Screen name={'알림'} component={Notification} options={({ navigation }) => ({
+         title: '알림',
+         headerTitleAlign: 'center',
+         headerShadowVisible: false,
+      })}/>
+      <Stack.Screen name={'알림설정'} component={NotificationDetail} options={({
+         title: '알림설정',
+         headerTitleAlign: 'center',
+         headerShadowVisible: false,
+        
+         })}/>
+      <Stack.Screen name={'프로필편집'} component={EditProfile} options={{
+         title: '프로필 편집',
+         headerTitleAlign: 'center',
+         headerShadowVisible: false,}}/>
+       <Stack.Screen name={'회원 탈퇴'} component={DeleteAccount}/>
       <Stack.Screen name={'광고문의'} component={Advertising}/>
       <Stack.Screen name={'공지사항'} component={Notice}/>
       <Stack.Screen name={'1:1문의하기'} component={Question}/>

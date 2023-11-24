@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Platform, Alert, Linking } from 'react-native';
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MainURL from '../../MainURL';
@@ -8,7 +8,9 @@ import LocalNews from './LocalNews';
 import Notice from './Notice';
 import AsyncGetItem from '../AsyncGetItem'
 import { Typography } from '../Components/Typography';
-import CapitalGraph from '../Buildings/CalculatorComponent/CapitalGraph';
+import {checkNotifications, requestNotifications} from 'react-native-permissions';
+import messaging from '@react-native-firebase/messaging';
+import Toast from 'react-native-toast-message';
 
 function HomeMain(props : any) {
 
@@ -26,6 +28,63 @@ function HomeMain(props : any) {
   useEffect(()=>{
     asyncFetchData();
   }, []);
+
+
+  // 알림 허용 여부 확인
+  const handleCheckNotifications = async () => {
+    const check = await checkNotifications();
+    if (check.status === 'denied' || check.status === 'blocked'){
+      requestNotifications(['alert', 'sound']).then(()=>{
+        if (check.status === 'denied' || check.status === 'blocked') {
+          Alert.alert('알림을 허용해주세요', '', [
+            { text: '취소', onPress: () => {return }},
+            { text: '허용', onPress: () => Linking.openSettings() }
+          ]);
+        }
+      })
+    } else if (check.status === 'granted') {
+      props.navigation.navigate("마이페이지", {screen:"Notification"});
+    } else {
+      return
+    }
+  }  
+  
+  // background 상태일 때, 알림 받기
+  useEffect(()=>{
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      if (remoteMessage) {
+        props.navigation.navigate("마이페이지", {screen:"Notification"});
+      }
+    });;
+  }, []); 
+
+  // quit 상태일 때, 알림 받기
+  useEffect(()=>{
+    messaging().getInitialNotification().then(remoteMessage => {
+      if (remoteMessage) {
+        props.navigation.navigate("마이페이지", {screen:"Notification"});
+      }
+    });;
+  }, []); 
+
+  // forground 상태일 때, 알림 받기
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      if (remoteMessage) {
+        Toast.show({
+          type: 'success',
+          text1: remoteMessage.notification?.title,
+          text2: remoteMessage.notification?.body,
+          onPress() {
+            props.navigation.navigate("마이페이지", {screen:"Notification"});
+          }
+        })
+      }
+    });;
+    return unsubscribe
+  }, []);
+  
+  // ------------------------------------
 
   const images = [
     require('../images/home/sample.png'),
@@ -79,18 +138,17 @@ function HomeMain(props : any) {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%'}}>
+          
         {/* logobox & title */}
         <View style={styles.logobox}>
           
           <Image source={require('../images/home/toplogo.png')} style={styles.toplogo}/>
-          {/* <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate("마이페이지", {screen:"알림"});
-            }}
+          <TouchableOpacity 
+            onPress={handleCheckNotifications}
             style={styles.topbell}
             >
             <AntDesign name="bells" size={30} color="black" />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
         <View style={styles.titlebox}>
           <Text style={{fontSize:20, marginBottom: 10}}>안녕하세요 <Typography fontSize={20}>{asyncGetData.userNickName}</Typography>님!</Text>

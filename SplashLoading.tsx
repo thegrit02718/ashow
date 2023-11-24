@@ -33,12 +33,11 @@ export default function SplashLoading (props: any) {
                 } else if (res.data.isUser === true) {
                   AsyncStorage.setItem('token', res.data.refreshToken);
                   props.navigation.replace("Navi_Main");
-                } else {
+                } else if (res.data === 'success') {
                   props.navigation.replace("Navi_Main");
                 }          
               }).catch((err : string)=>{
                 console.log('verifyToken_Err', err);
-                props.navigation.replace("Navi_Main");
               });
           }
         })

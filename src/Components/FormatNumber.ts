@@ -1,6 +1,6 @@
 import React from 'react';
 
-function FormatNumber( number : number ) {
+function FormatNumber( number : number ) : string {
   const numberStr = number.toString();
   let billionPart = numberStr.slice(-9, -8);
   let millionPart = numberStr.slice(-8, -4);

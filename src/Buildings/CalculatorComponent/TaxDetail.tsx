@@ -37,7 +37,7 @@ export default function TaxDetail(props: any) {
         </TouchableOpacity>
       </View>
       <View style={{ width: '100%', height: route.params.data.imageHeight, marginBottom: 50 }}>
-        <Image source={imageSource} style={{ width: '100%', height: '100%' }} />
+        <Image source={imageSource} style={{ width: '100%', height: '100%', resizeMode:'contain' }} />
       </View>
     </ScrollView>
   );

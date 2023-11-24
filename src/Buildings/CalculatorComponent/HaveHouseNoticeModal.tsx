@@ -21,7 +21,7 @@ export default function HaveHouseNoticeModal (props : any) {
             <Entypo name="dot-single" size={15} color="black" />
           </View>
           <View style={{width:'95%',}}>
-            <Typography fontWeight='600'>세금은 개인별 주택 보유수와 생애 최초 주택 구매 여부에 따라 취득세 감면 등 상이할 수 있습니다.</Typography>
+            <Typography fontWeightIdx={1}>세금은 개인별 주택 보유수와 생애 최초 주택 구매 여부에 따라 취득세 감면 등 상이할 수 있습니다.</Typography>
           </View>
         </View>
         <View style={{flexDirection:'row', marginVertical:5}}>
@@ -29,7 +29,7 @@ export default function HaveHouseNoticeModal (props : any) {
             <Entypo name="dot-single" size={15} color="black" />
           </View>
           <View style={{width:'95%',}}>
-            <Typography fontWeight='600'>조정 대상 지역 등 규제지역에 따라 세금이 달라질 수 있습니다.</Typography>
+            <Typography fontWeightIdx={1}>조정 대상 지역 등 규제지역에 따라 세금이 달라질 수 있습니다.</Typography>
           </View>
         </View>
         <View style={{flexDirection:'row', marginVertical:5}}>
@@ -37,7 +37,7 @@ export default function HaveHouseNoticeModal (props : any) {
             <Entypo name="dot-single" size={15} color="black" />
           </View>
           <View style={{width:'95%',}}>
-            <Typography fontWeight='600'>주택 수에 따라 변동되는 세율은 자금 스케줄 상세 내역에서 확인하실 수 있습니다.</Typography>
+            <Typography fontWeightIdx={1}>주택 수에 따라 변동되는 세율은 자금 스케줄 상세 내역에서 확인하실 수 있습니다.</Typography>
           </View>
         </View>
 

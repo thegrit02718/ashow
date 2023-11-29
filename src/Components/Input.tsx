@@ -6,10 +6,12 @@ interface InputProps  {
     value?:string;
     onChange?:(text:string)=> void;
     cursor?: string;
+    endEditing?: () => void;
     style?: any;
+    
 }
 
-export default function Input({value, onChange,cursor,style }:InputProps,) {
+export default function Input({value, onChange, endEditing, cursor,style }:InputProps,) {
     const [isInputFocused, setIsInputFocused] = useState(false);
    
   return (
@@ -23,6 +25,7 @@ export default function Input({value, onChange,cursor,style }:InputProps,) {
       }}
       onFocus={() => setIsInputFocused(true)}
       onBlur={() => setIsInputFocused(false)}
+      onEndEditing={endEditing}
       cursorColor={cursor}
       style={style}
   />

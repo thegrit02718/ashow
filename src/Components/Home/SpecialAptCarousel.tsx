@@ -69,12 +69,13 @@ export default function Carousels() {
           </View>
         </Shadow>
       </View>
-      
- 
     );
   }
   return (
     <View style={{ flex:1}}>
+      <View style={styles.p_horizon_24}>
+        <Typography fontSize={20} fontWeightIdx={0} marginBottom={16}>특별 혜택 아파트</Typography>
+      </View>
       <Carousel
         data={pages}
         vertical={undefined}
@@ -96,6 +97,9 @@ const styles = StyleSheet.create({
     width: "100%", 
     paddingBottom:5,
     marginHorizontal:24,
+  },
+  p_horizon_24:{
+    paddingHorizontal: 24,
   },
   flexBox: {
     display: 'flex',

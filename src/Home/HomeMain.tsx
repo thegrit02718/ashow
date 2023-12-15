@@ -1,495 +1,212 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Platform, Alert, Linking } from 'react-native';
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MainURL from '../../MainURL';
-import PartNews from './PartNews';
-import LocalNews from './LocalNews';
-import Notice from './Notice';
-import AsyncGetItem from '../AsyncGetItem'
+import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Platform, TouchableNativeFeedback, TouchableWithoutFeedback, Dimensions } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import { Typography } from '../Components/Typography';
-import {checkNotifications, requestNotifications} from 'react-native-permissions';
-import messaging from '@react-native-firebase/messaging';
-import Toast from 'react-native-toast-message';
+import { Alert } from 'react-native';
+import SpecialAptCarousel from '../Components/Home/SpecialAptCarousel';
+import LatestAptCarousel from '../Components/Home/LatestAptCarousel';
+import Tabs from '../Components/Tab/Tabs';
+import { Divider } from '../Components/Divider';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import FavoritedAptList from '../Components/Search/FavoritedAptList';
+import ModelHouseCarousel from '../Components/Home/ModelHouseCarousel';
+import MainBannerCarousel from '../Components/Home/MainBannerCarousel';
 
 function HomeMain(props : any) {
-
-  // AsyncGetData
-  const [asyncGetData, setAsyncGetData] = useState<any>({});
-  const asyncFetchData = async () => {
-    try {
-      const data = await AsyncGetItem();
-      setAsyncGetData(data);
-    } catch (error) {
-      console.error(error);
+  const brandAptDummy = [
+    { 
+      address: '대구 중구',
+      name: '동인동 힐스테이트 동인', 
+      image:require('../images/home/apt_1.png'),
+      price: '6억 147 ~ 7억 2,003'
+    },
+    { 
+      address: '대구 동구',
+      name: '신천동 힐스테이트 동대구센트럴', 
+      image:require('../images/home/apt_2.png'),
+      price: '6억 3,480 ~ 12억 600'
+    },
+    { 
+      address: '대구 서구',
+      name: '비산동 힐스테이트 서대구역센트럴', 
+      image:require('../images/home/apt_3.png'),
+      price: '5억 6,839'
     }
-  };
+  ]
   
-  useEffect(()=>{
-    asyncFetchData();
-  }, []);
-
-
-  // 알림 허용 여부 확인
-  const handleCheckNotifications = async () => {
-    const check = await checkNotifications();
-    if (check.status === 'denied' || check.status === 'blocked'){
-      requestNotifications(['alert', 'sound']).then(()=>{
-        if (check.status === 'denied' || check.status === 'blocked') {
-          Alert.alert('알림을 허용해주세요', '', [
-            { text: '취소', onPress: () => {return }},
-            { text: '허용', onPress: () => Linking.openSettings() }
-          ]);
-        }
-      })
-    } else if (check.status === 'granted') {
-      props.navigation.navigate("마이페이지", {screen:"Notification"});
-    } else {
-      return
-    }
-  }  
-  
-  // background 상태일 때, 알림 받기
-  useEffect(()=>{
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      if (remoteMessage) {
-        props.navigation.navigate("마이페이지", {screen:"Notification"});
-      }
-    });;
-  }, []); 
-
-  // quit 상태일 때, 알림 받기
-  useEffect(()=>{
-    messaging().getInitialNotification().then(remoteMessage => {
-      if (remoteMessage) {
-        props.navigation.navigate("마이페이지", {screen:"Notification"});
-      }
-    });;
-  }, []); 
-
-  // forground 상태일 때, 알림 받기
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      if (remoteMessage) {
-        Toast.show({
-          type: 'success',
-          text1: remoteMessage.notification?.title,
-          text2: remoteMessage.notification?.body,
-          onPress() {
-            props.navigation.navigate("마이페이지", {screen:"Notification"});
-          }
-        })
-      }
-    });;
-    return unsubscribe
-  }, []);
-  
-  // ------------------------------------
-
-  const images = [
-    require('../images/home/sample.png'),
-    require('../images/home/sample.png'),
-    require('../images/home/sample.png'),
-    require('../images/home/sample.png'),
-  ];
-
-  const favorList = [
-    { id: 1, title: '만촌자이르네', address: '수성구 만촌동', size1: '29', size2: '77' },
-    { id: 2, title: '월성자이르네', address: '달서구 월성동', size1: '32', size2: '84' }
-  ];
-
-  const newimages = [
-    require('../images/home/samplenew.png'),
-    require('../images/home/samplenew.png'),
-    require('../images/home/samplenew.png'),
-    require('../images/home/samplenew.png'),
-  ];
-
-  const recommedimages = [
-    require('../images/home/recommend1.png'),
-    require('../images/home/recommend1.png'),
-    require('../images/home/recommend1.png'),
-    require('../images/home/recommend1.png'),
-  ];
-
-  interface FavorListContentProps {
-    title: string;
-    address: string;
-    size1: any;
-    size2: any;
-  }
-
-  const FavorListContent: React.FC<FavorListContentProps> = ({ title, address, size1, size2 }) => (
-    <View style={styles.favorsListBox}>
-      <View style={styles.favorsListContentBox}>
-        <Typography fontSize={18}>{title}</Typography>
-        <Typography>
-          <AntDesign name="star" size={24} color="gold" />
-        </Typography>
-      </View>
-      <View style={styles.favorsListContentBox}>
-        <Typography color={'gray'} fontSize={12}>{address}</Typography>
-        <Typography color={'gray'} fontSize={12}>{size1}평({size2}㎡)</Typography>
-      </View>
-      <View style={styles.divider} />
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%'}}>
-          
-        {/* logobox & title */}
-        <View style={styles.logobox}>
-          
-          <Image source={require('../images/home/toplogo.png')} style={styles.toplogo}/>
-          <TouchableOpacity 
-            onPress={handleCheckNotifications}
-            style={styles.topbell}
-            >
-            <AntDesign name="bells" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.titlebox}>
-          <Text style={{fontSize:20, marginBottom: 10}}>안녕하세요 <Typography fontSize={20}>{asyncGetData.userNickName}</Typography>님!</Text>
-          <Text style={styles.titleTypography}>아쇼로 <Text style={{color: '#CC5A57'}}>아파트</Text>도 {'\n'}손쉽게 쇼핑해보세요!</Text>
-        </View>
-   
-        {/* topLinkButtons */}
-        <View style={styles.linkbuttonContainer}>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('매물');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkImageBox}>
-              <Image source={require('../images/home/button1.png')} style={styles.linkImage}/>
+    <ScrollView style={{flex:1,}}>
+      <View style={styles.wrapper}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={[styles.flexBox,{gap:12}]}>
+              <Image style={styles.logo} source={require('../images/home/toplogo.png')} resizeMode='contain'/>
+              <View style={styles.bar}></View>
+              <TouchableOpacity style={[styles.flexBox ]}>
+                <Typography fontSize={14} fontWeightIdx={1} color='#3D3D3D'>대구 수성구</Typography>
+                <MaterialIcons style={{marginTop:1 }}name="keyboard-arrow-down" size={19} color="#333333" />
+              </TouchableOpacity>
             </View>
-            <Typography>매물</Typography>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('Prepare');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkImageBox}>
-              <Image source={require('../images/home/button2.png')} style={styles.linkImage}/>
-            </View>
-            <Typography fontSize={12}>관심단지</Typography>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('Prepare');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkImageBox}>
-              <Image source={require('../images/home/button3.png')} style={styles.linkImage}/>
-            </View>
-            <Typography fontSize={12}>아쇼사용법</Typography>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => {
-              props.navigation.navigate('Prepare');
-            }}
-            style={styles.linkbutton}
-            >
-            <View style={styles.linkImageBox}>
-              <Image source={require('../images/home/button4.png')} style={styles.linkImage}/>
-            </View>
-            <Typography fontSize={12}>공지사항</Typography>
-          </TouchableOpacity>
-        </View>
-
-        {/* topImgSwife */}
-        <View style={styles.topImgSwifeBox}>
-          <ScrollView 
-            horizontal = {true}
-            showsHorizontalScrollIndicator = {false}
-          >
-            {images.map((image, index) => (
-              <Image key={index} source={image} style={styles.scrollImages} />
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* favorsBuilings */}
-        <View style={styles.favorsContainer}>
-          <View style={styles.favorsTitleBox}>
-            <Typography fontSize={20} marginBottom={18}>{asyncGetData.userNickName}님의 관심단지</Typography>
-            <TouchableOpacity 
-              onPress={() => {
-                // props.navigation.navigate('관심단지');
-              }}
-              >
-              <Text style={styles.favorsAllView}>전체보기</Text>
-            </TouchableOpacity>
+            <TouchableNativeFeedback onPress={()=>Alert.alert('click')}><Feather name="search" size={22} color="#333333" /></TouchableNativeFeedback>
           </View>
-          {favorList.map(favor => (
-            <FavorListContent
-              key={favor.id}
-              title={favor.title}
-              address={favor.address}
-              size1={favor.size1}
-              size2={favor.size2}
-            />
-          ))}
+          <View style={{height:350, backgroundColor:"#F5F4F3"}}>
+            <MainBannerCarousel/>
+          </View>
+          <View style={styles.section}>
+            <View style={styles.p_horizon_24}>
+              <Typography fontSize={20} fontWeightIdx={0} marginBottom={16}>특별 혜택 아파트</Typography>
+            </View>
+            <SpecialAptCarousel/>
+          </View>
         </View>
-
-        {/* newBuilings */}
-        <View style={styles.newbuildingsContainer}>
-          <Text style={styles.newbuildingsTitle}>따끈따끈한 <Typography color={'#CC5A57'} fontSize={20}>신규매물</Typography></Text>
-          <View style={styles.newbuildingsImgBox}>
-            <ScrollView 
-              horizontal = {true}
-              showsHorizontalScrollIndicator = {false}
-            >
-              {newimages.map((image, index) => (
-                <Image key={index} source={image} style={styles.newBuildingsImages} />
-              ))}
+        <View style={styles.section}>
+          <View style={styles.p_horizon_24}>
+            <Typography fontSize={20} fontWeightIdx={0} marginBottom={16}>브랜드관</Typography>
+          </View>
+          <Tabs defaultValue={1}>
+            <ScrollView horizontal>
+              <View style={[styles.tab]}>
+                <Tabs.ImageTrigger value={1} text="힐스테이트"  source={require('../images/home/brand_logo_1.png')}/>
+                <Tabs.ImageTrigger value={2} text="프루지오" source={require('../images/home/brand_logo_2.png')}/>
+                <Tabs.ImageTrigger value={3} text="극동스타클래스" source={require('../images/home/brand_logo_3.png')}/>
+                <Tabs.ImageTrigger value={4} text="서한이다음" source={require('../images/home/brand_logo_4.png')}/>
+                <Tabs.ImageTrigger value={5} text="빌리브" source={require('../images/home/brand_logo_5.png')}/>
+                <Tabs.ImageTrigger value={6} text="엘크루" source={require('../images/home/brand_logo_6.png')}/>
+                <Tabs.ImageTrigger value={7} text="스위첸" source={require('../images/home/brand_logo_7.png')}/>
+              </View>
             </ScrollView>
+            {Array(7).fill(null).map((_, idx) =>{
+              return (
+              <Tabs.Panel value={idx+1} key={idx}>
+                <View style={{flex:1, paddingTop:30, paddingHorizontal:30,}}>
+                  {brandAptDummy.map((item,idx) => {
+                    return (
+                    <TouchableOpacity key={idx}>
+                      <View style={styles.card}>
+                        <Image style={styles.brandImage} source={item.image} alt="힐스테이트"resizeMode='contain'/>
+                        <View style={ styles.textArea}>
+                          <Typography fontSize={12} fontWeightIdx={2} color='#8B8B8B' marginBottom={1}>{item.address}</Typography>
+                          <Typography fontSize={14} fontWeightIdx={1} color='#555' marginBottom={3}>{item.name}</Typography>
+                          <View style={styles.brandPrice}>
+                            <Typography fontSize={16} fontWeightIdx={0} color='#555' >분양가</Typography>
+                            <Typography fontSize={16} fontWeightIdx={0} color='#E8726E'>{item.price}</Typography>
+                          </View>
+                        </View>
+                         <SimpleLineIcons name="arrow-right" size={12} color="#DFDFDF" />  
+                      </View>
+                      {brandAptDummy.length !== idx+1 && <Divider height={2} marginVertical={16}/>}
+                    </TouchableOpacity>)
+                  })}
+                </View>
+              </Tabs.Panel>)
+            })}
+          </Tabs>
+        </View>
+        <View style={styles.section} >
+          <LatestAptCarousel/>
+          <TouchableOpacity style={styles.p_horizon_24}>
+            <View style={styles.latestAptBtn}>
+              <Typography fontSize={14} fontWeightIdx={2}>전체보기</Typography>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.section}>
+          <FavoritedAptList />
+        </View>
+        <View style={styles.section}>
+          <View style={styles.p_horizon_24}>
+            <Typography fontSize={20} fontWeightIdx={0} marginBottom={16}>사이버 모델하우스</Typography>
           </View>
+          <ModelHouseCarousel/>
         </View>
+      </View>
+    </ScrollView>
+  )
+ 
 
-        {/* part news */}
-        <View style={styles.News}>
-          <Typography fontSize={20} marginBottom={18}>분야별 뉴스</Typography>   
-          <PartNews></PartNews>
-          <View style={styles.partNewsAllViewBox}>
-            <TouchableOpacity 
-                style={styles.partNewsAllView}
-                onPress={() => {
-                  // props.navigation.navigate('');
-                }}
-                >
-              <Text style={styles.partNewsAllViewTypography}>기사 전체보기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+  
 
-        {/* Local news */}
-        <View style={styles.localNews}>
-          <Typography fontSize={20} marginBottom={18}>지역 주요 뉴스</Typography>   
-          <LocalNews></LocalNews>
-        </View>
-
-        {/* 추천 게시물 */}
-        <View style={styles.recommend}>
-          <Typography fontSize={20} marginBottom={18}>추천 게시물</Typography>   
-          <View style={styles.recommendImgBox}>
-            <ScrollView 
-              horizontal = {true}
-              showsHorizontalScrollIndicator = {false}
-            >
-              {recommedimages.map((image, index) => (
-                <Image key={index} source={image} style={styles.recommendImages} />
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-
-        <View style={styles.notice}>
-          <Typography fontSize={20} marginBottom={18}>공지사항</Typography>
-          <Notice></Notice>
-        </View>
-
-        {/* footer */}
-        <View style={{backgroundColor:'#EAEAEA', height:150, width:'100%', padding:20}}>
-          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>(주)더그릿</Typography>
-          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>사업자등록번호 : 146-87-02718</Typography>
-          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>대표 E-Mail : thegrit02718@naver.com</Typography>
-          <Typography fontSize={10} marginBottom={10} color='#8C8C8C'>대표 카카오톡 ID : thegrit02718</Typography>
-        </View>
-
-      </ScrollView>
-    </View> 
-   );
 }
 export default HomeMain;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  wrapper:{
+    flexDirection:'column',
+    backgroundColor: "#FCF8F8",
+    display:'flex',
+    gap: 8
   },
-  logobox: {
-    flex: 1,
-    width: '100%',
-    height: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 30
+  container:{ },
+  section:{
+    backgroundColor:"#fff",
+    paddingVertical:32,
   },
-  toplogo : {
-    width: 80,
-    height: 40,
-    resizeMode: 'contain',
+  p_horizon_24:{
+    paddingHorizontal: 24,
   },
-  topbell : {
-    width: 30,
-    height: 40,
-  },
-  titlebox: {
-    width: '100%',
-    height: 100,    
-    paddingLeft: 20,
-    marginBottom: 20
-  },
-  titleTypography: {
-    fontSize: 24,
-    fontWeight: 'bold'
+  p_vertical_18:{
+    paddingVertical:32
   },
   
-  // topButton
-  linkbuttonContainer: {
-    width: '100%',
-    height: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: 10
-  },
-  linkbutton: {
-    width: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  linkImageBox: {
-    width: 56,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    backgroundColor: '#edebeb',
-    marginBottom: 8
-  },
-  linkImage: {
-    resizeMode: 'contain',
-  },
-
-  // topImgSwife
-  topImgSwifeBox: {
-    width: '100%',
-    height: 230,
-    paddingVertical: 40,
-    justifyContent: 'center',
-  },
-  scrollImages: {
-    width: 330,
-    height: 146,
-    borderRadius: 20,
-    marginLeft: 24
-  },
-
-
-  // favors
-  favorsContainer: {
+  header:{
+    paddingVertical:18,
     paddingHorizontal: 24,
+    display:'flex',
+    alignItems:'flex-start',
+    justifyContent:'space-between',
+    flexDirection:'row',
+    backgroundColor:'#fff',
+   },
+  logo:{
+    width:40,
+    height:20,
   },
-  favorsTitleBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+  bar:{
+    width:2,
+    height:24,
+    backgroundColor:"#EFEFEF",
   },
-  favorsAllView: {
-    textDecorationLine: 'underline',
-    color: 'gray'
+  flexBox: {
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center'
   },
-  favorsListBox: {
-    height: 100,
-    justifyContent: 'center',
+  tab:{
+    width:"100%",
+    paddingVertical:10,
+    borderBottomWidth:2,
+    borderColor:'#FCF8F8',
+    flexDirection:'row',
+    gap: 10,
+    paddingHorizontal:24
   },
-  favorsListContentBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'gray',
-    marginVertical: 5
-  },
+  card:{
+    flexDirection:'row',
+    gap: 15,
+    alignItems:'center',
   
-  // newbuildings
-  newbuildingsContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    height: 242
   },
-  newbuildingsTitle: {
-    fontSize: 20,
-    marginBottom: 20
+  brandImage:{
+    height:95,
+    width:95,
+    borderRadius:10},
+  textArea:{
+    width:200
   },
-  newbuildingsImgBox: {
-
-  },
-  newBuildingsImages: {
-    width: 296,
-    height: 136,
-    shadowColor: 'gray',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-  
-  // partNews
-  News: {
-    paddingHorizontal: 24,
-    height: 411,
-    marginBottom: 30,
-  },
-  partNewsAllViewBox: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  partNewsAllView: {
-    width: 322,
-    height: 44,
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: 'gray',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  partNewsAllViewTypography: {
-    fontSize: 14
-  },
-  localNews: {
-    paddingHorizontal: 24,
-    height: 280,
-    marginBottom: 30,
-  },
-
-  // recommend
-  recommend: {
-    paddingHorizontal: 24,
-    height: 162,
-    marginBottom: 30
-  },
-  recommendImgBox: {
-
-  },
-  recommendImages: {
-    width: 240,
-    height: 120,
-    marginLeft: 10,
-    shadowColor: 'gray',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-  
-  // notice
-  notice: {
-    paddingHorizontal: 24,
-    height: 100,
-    marginBottom: 30
-  },
+   brandPrice:{
+      flexDirection:'row',
+      alignItems:'center',
+      gap: 4, 
+   },
+   latestAptBtn:{
+    borderWidth:1,
+    borderColor:"#DFDFDF",
+    paddingVertical:13,
+    borderRadius:8,
+    alignItems:'center',
+    marginTop:26,
+   }
 });
 

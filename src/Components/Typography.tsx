@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text } from 'react-native';
 
-const fontFamilies = ['Pretendard-Bold', 'Pretendard-Regular', 'Pretendard-Light', 'Pretendard-Thin']
+const fontFamilies = ['Pretendard-Bold','Pretendard-SemiBold', 'Pretendard-Regular', 'Pretendard-Light', 'Pretendard-Thin']
 
 export const Typography:React.FC<{
     fontWeightIdx?: number,

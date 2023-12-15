@@ -54,9 +54,6 @@ function HomeMain(props : any) {
             <MainBannerCarousel/>
           </View>
           <View style={styles.section}>
-            <View style={styles.p_horizon_24}>
-              <Typography fontSize={20} fontWeightIdx={0} marginBottom={16}>특별 혜택 아파트</Typography>
-            </View>
             <SpecialAptCarousel/>
           </View>
         </View>
@@ -115,9 +112,6 @@ function HomeMain(props : any) {
           <FavoritedAptList />
         </View>
         <View style={styles.section}>
-          <View style={styles.p_horizon_24}>
-            <Typography fontSize={20} fontWeightIdx={0} marginBottom={16}>사이버 모델하우스</Typography>
-          </View>
           <ModelHouseCarousel/>
         </View>
       </View>

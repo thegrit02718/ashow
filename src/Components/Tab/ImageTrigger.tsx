@@ -25,7 +25,7 @@ export default function ImageTrigger({source, value, text, disabled = false}: Tr
       style={[styles.Trigger]}
       disabled={disabled}
       onPress={handlePress}>
-        <View style={[styles.imageBox, isActive ? styles.active : null]}>
+        <View style={[styles.imageBox, isActive ? styles.active : styles.inactive]}>
             <Image style={styles.image} source={source} alt={text} resizeMode='contain'/>
         </View>
       {text && (
@@ -50,6 +50,9 @@ const styles = StyleSheet.create({
  
   active: {
     borderColor: '#f3959f',
+  },
+  inactive:{
+    borderColor:"#FCF8F8",
   },
   image:{
     width: "100%", height:"100%"  },

@@ -5,7 +5,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import MainURL from '../../MainURL';
 import AsyncSetItem from '../AsyncSetItem'
- 
+import Animated, {withSpring, useAnimatedStyle } from 'react-native-reanimated';
+const AnimatedView = Animated.createAnimatedComponent(View);
+
 export default function Agree (props : any) {
   
   // 전송된 데이터 셋팅
@@ -18,8 +20,8 @@ export default function Agree (props : any) {
       setUserAccount(routeData.email);
       setUserNickName(routeData.nickName);
       setUserURL(routeData.userURL);
-      setCity(routeData.city);
-      setCounty(routeData.county);
+      // setCity('');
+      // setCounty('');
     }
   }
 
@@ -45,11 +47,13 @@ export default function Agree (props : any) {
     return (
       <View style={styles.checkboxItem}>
         <TouchableOpacity onPress={()=>{props.setIsCheck(!props.isCheck)}}>
-          { props.isCheck ? <AntDesign name="checkcircle" size={24} color="#333" style={styles.checkboxicon} />
+          { props.isCheck ? <AntDesign name="checkcircle" size={20} color="#333" style={styles.checkboxicon} />
           : <AntDesign name="checkcircle" size={20} color="#8C8C8C" style={styles.checkboxicon} /> }
         </TouchableOpacity>
         <View style={styles.checkboxContent}>
-          <Text style={[styles.checkboxText, {color: '#6F6F6F'}]}>{props.text}</Text>
+          <TouchableOpacity onPress={()=>{props.setIsCheck(!props.isCheck)}}>
+            <Text style={[styles.checkboxText, {color: '#6F6F6F'}]}>{props.text}</Text>
+          </TouchableOpacity>
           <Text style={[styles.checkboxText, {color: '#B33936'}]}> {props.choice}</Text>
           {
             props.view
@@ -119,11 +123,18 @@ export default function Agree (props : any) {
     }
   };
 
+  // 상단바 에니메이션
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(isCheck1_upAge14 && isCheck2_usingPolicy && isCheck3_personalInfo && isCheck4_contentsRestrict ? '100%' : '50%')
+    };
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.progressBarBox}>
-        <View style={styles.progressBar}>
-          <View style={styles.progress}></View>
+        <View  style={styles.progressBar}>
+          <AnimatedView style={[styles.progress, headerStyle]}></AnimatedView>
         </View>
       </View>
       <View style={styles.mainContainer}>
@@ -142,7 +153,7 @@ export default function Agree (props : any) {
           </Text>
           <View style={{marginTop:10}}>
             <AgreeBox choice={'[필수]'} text={'만 14세 이상입니다.'} view={''} isCheck={isCheck1_upAge14} setIsCheck={setIsCheck1_upAge14}link=''/> 
-            <AgreeBox choice={'[필수]'} text={'위치정보 서비스 이용 약관에 동의합니다.'} view={'보기'} isCheck={isCheck2_usingPolicy} setIsCheck={setIsCheck2_usingPolicy} 
+            <AgreeBox choice={'[필수]'} text={'서비스 이용 약관에 동의합니다.'} view={'보기'} isCheck={isCheck2_usingPolicy} setIsCheck={setIsCheck2_usingPolicy} 
               link='https://www.ashow.co.kr/usingpolicy.html'/>
             <AgreeBox choice={'[필수]'} text={'개인정보 수집 및 이용에 동의합니다.'} view={'보기'} isCheck={isCheck3_personalInfo} setIsCheck={setIsCheck3_personalInfo} 
               link='http://www.ashow.co.kr/personalinfo.html'/>
@@ -151,20 +162,16 @@ export default function Agree (props : any) {
             
             <View style={styles.divider}></View>
 
-            <View style={styles.allCheckbox}>
-              <TouchableOpacity 
-                  onPress={handleAllAgree}
-                >
-                { isAllCheck ? <AntDesign name="checkcircle" size={24} color="#333" style={styles.checkboxicon} />
-                : <AntDesign name="checkcircle" size={20} color="#8C8C8C" style={styles.checkboxicon} /> }
-              </TouchableOpacity>
-              <Text style={styles.allCheckboxText}>모든 약관에 동의합니다.</Text>
-            </View>      
+            <TouchableOpacity onPress={handleAllAgree}>
+              <View style={styles.allCheckbox}>
+                  { isAllCheck ? <AntDesign name="checkcircle" size={20} color="#333" style={styles.checkboxicon} />
+                  : <AntDesign name="checkcircle" size={20} color="#8C8C8C" style={styles.checkboxicon} /> }
+                <Text style={styles.allCheckboxText}>모든 약관에 동의합니다.</Text>
+              </View>      
+            </TouchableOpacity>
           </View>
-          
         </View>
-      </View>
-      <View style={{paddingHorizontal:24}}>
+        
         <TouchableOpacity 
           onPress={handleSignup}
           style={
@@ -175,6 +182,7 @@ export default function Agree (props : any) {
           >
           <Text style={styles.nextBtnText}>가입하기</Text>
         </TouchableOpacity>
+      
       </View>
     </View>
   );
@@ -194,7 +202,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFEF',
   },
   progress: {
-    width: '100%',
     height: 6,
     backgroundColor: '#F0A3A1',
   },
@@ -214,6 +221,7 @@ const styles = StyleSheet.create({
     flex: 6,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    paddingBottom:20
   },
   titleTextBox: {
     justifyContent: 'center',
@@ -225,14 +233,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   checkboxItem: {
-    height: 30,
+    minHeight: 30,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
   },
   checkboxContent: {
     flexDirection: 'row',
-    marginVertical: 3
+    marginVertical: 3,
+    flexWrap:'wrap',
   },
   checkboxicon: {
     marginRight: 10
@@ -267,7 +276,6 @@ const styles = StyleSheet.create({
   nextBtnBox: {
     borderRadius: 16,
     width: '100%',
-    marginBottom: 50,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center'

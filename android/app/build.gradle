@@ -80,8 +80,8 @@ android {
         applicationId "com.ashow.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName "1.1.5"
+        versionCode 26
+        versionName "1.2.6"
     }
     signingConfigs {
         release {
@@ -139,3 +139,4 @@ dependencies {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"

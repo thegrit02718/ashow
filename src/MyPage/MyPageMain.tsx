@@ -29,20 +29,6 @@ function MyPageMain (props: any) {
     asyncFetchData();
   }, []);
   
-  const handleLogout = () => {
-    AsyncStorage.removeItem('token');
-    AsyncStorage.removeItem('account');
-    AsyncStorage.removeItem('name');
-    AsyncStorage.removeItem('nickname');
-    AsyncStorage.removeItem('URL');
-    Alert.alert('로그아웃 되었습니다.');
-    props.navigation.replace("Navi_Login")
-  };
-
-  const deleteAccount = () => {
-    props.navigation.navigate("회원 탈퇴")
-  };
-
   const menuData = [
     { key: '1', source: require("../images/mypage/buildings.png"), name: "매물" },
     { key: '2', source: require("../images/mypage/guide.png"), name: "부동산 가이드" },
@@ -50,7 +36,6 @@ function MyPageMain (props: any) {
     { key: '4', source: require("../images/mypage/method.png"), name: "아쇼 사용법" },
     { key: '5', source: require("../images/mypage/enroll.png"), name: "아파트 등록 요청" },
   ];
-
   
   return (
     <View style={styles.container}>
@@ -61,18 +46,18 @@ function MyPageMain (props: any) {
               <Typography fontSize={20} fontWeightIdx={2} marginBottom={8}>안녕하세요!</Typography>
               <Typography fontSize={28}>{asyncGetData.userNickName}님</Typography>  
             </View>
-            <TouchableWithoutFeedback onPress={()=> props.navigation.navigate('프로필편집', {userInfo: asyncGetData})} > 
+            {/* <TouchableWithoutFeedback onPress={()=> props.navigation.navigate('EditProfile', {userInfo: asyncGetData})} > 
               <View style={styles.profileEditBtn}>
                 <Typography fontSize={12} color="#595959">프로필 편집하기 </Typography>
                 <MaterialIcons name="keyboard-arrow-right" size={20} color="#595959" style={{marginTop:2}} />
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback> */}
           </View> 
           
           <View style={styles.linkbuttonBox}>
             <TouchableOpacity 
               onPress={() => {
-                props.navigation.navigate('FavorList');
+                props.navigation.navigate('FavorList', {userAccount : asyncGetData.userAccount});
               }}
               style={styles.linkbutton}
               >
@@ -83,7 +68,7 @@ function MyPageMain (props: any) {
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => {
-                props.navigation.navigate('알림');
+                props.navigation.navigate("Navi_Notifi", {screen:"Notification"});
               }}
               style={styles.linkbutton}
               >
@@ -107,7 +92,7 @@ function MyPageMain (props: any) {
 
           <TouchableOpacity 
             onPress={() => { 
-              props.navigation.navigate('History');
+              props.navigation.navigate('History', {userAccount : asyncGetData.userAccount});
             }}
             style={styles.historyBox}
             >
@@ -119,50 +104,49 @@ function MyPageMain (props: any) {
           </TouchableOpacity>
         </Layout>
        
-        <Divider marginVertical={24}/>
-        <View style={{ width:"100%",flexDirection:"row" ,flexWrap: 'wrap', justifyContent:"space-between",paddingHorizontal:24,}}>
+        {/* <Divider marginVertical={24}/> */}
+        {/* <View style={{ width:"100%",flexDirection:"row" ,flexWrap: 'wrap', justifyContent:"space-between",paddingHorizontal:24,}}>
         {menuData.map(item=>{
           return <MenuItem key={item.key} name={item.name} source={item.source} />
         })}
-        </View>
+        </View> */}
           
         <Divider marginVertical={32} height={8}/>
 
         <Layout>
           <Typography fontSize={20}>서비스 설정</Typography>
           <View style={{marginTop:32}}>
-            <TouchableOpacity style={[styles.bottomButton,{marginBottom:24}]} onPress={()=>{
-              props.navigation.navigate('알림');
-            }}>
-              <Text style={styles.bottomButtonText}>알림 설정</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomButton} onPress={()=>{
-              props.navigation.navigate('프로필편집');
-            }}>
-              <Text style={styles.bottomButtonText}>프로필 설정</Text>
-            </TouchableOpacity>            
+            <LinkItem text="알림 설정" onPress={()=>props.navigation.navigate('Navi_Notifi', {screen: 'NotificationSetting'})}/>
+            <LinkItem text="프로필 설정" onPress={()=>props.navigation.navigate('EditProfile', {userInfo : asyncGetData})}/>
           </View>
           <Divider marginVertical={32}/>
           <View>
             <Typography fontSize={20}>고객센터</Typography> 
             <View style={{marginTop:32}}>
-              <LinkItem accent text="공지사항" onPress={()=>props.navigation.navigate('공지사항')}/>
-              <LinkItem accent text="1:1 문의하기" onPress={()=>props.navigation.navigate('1:1 문의사항')}/>
-              <LinkItem accent text="자주 묻는 질문" onPress={()=> props.navigation.navigate('자주묻는질문')}/>
-              <LinkItem text="사업 제휴 및 광고 문의" onPress={()=> props.navigation.navigate('사업 제휴 및 광고 문의')}/>
-              <LinkItem text="불편사항 신고하기" onPress={()=> props.navigation.navigate('불편사항 신고하기')}/>
-              <LinkItem text="사업자 정보" onPress={()=> props.navigation.navigate('사업자 정보')}/>
+              <LinkItem accent text="공지사항" onPress={()=>props.navigation.navigate('Notice')}/>
+              <LinkItem accent text="1:1 문의하기" onPress={()=>props.navigation.navigate('Question')}/>
+              <LinkItem text="사업 제휴 및 광고 문의" onPress={()=> props.navigation.navigate('Advertising')}/>
+              <LinkItem text="사업자 정보" onPress={()=> props.navigation.navigate('BusinessInfo')}/>
             </View>
             </View>
             <Divider marginVertical={32}/>
-            <View style={{marginBottom:32}}>
+            <View style={{}}>
               <Typography fontSize={20}>약관 및 운영정책</Typography>
               <View style={{marginTop:32}}>
-                <LinkItem text="약관 및 서비스 이용 동의" onPress={()=>props.navigation.navigate('약관 및 서비스 이용 동')}/>
-                <LinkItem text="개인정보 처리 방침" onPress={()=> props.navigation.navigate('개인정보처리방침')}/>          
-                <LinkItem text="버전 정보" onPress={()=> props.navigation.navigate('버전정보')}/>          
+                <LinkItem text="약관 및 서비스 이용 동의" onPress={()=>props.navigation.navigate('Policy')}/>
+                <LinkItem text="개인정보 처리 방침" onPress={()=> props.navigation.navigate('PersonInfo')}/>          
+                <LinkItem text="버전정보" onPress={()=> props.navigation.navigate('VersionInfo')}/>
               </View>
           </View>
+          <TouchableOpacity
+            hitSlop={{ top: 15, bottom: 15 }}
+            style={styles.deleteAccountContainer}
+            onPress={()=>{
+              props.navigation.navigate("DeleteAccount");
+            }}
+          >
+            <Text style={styles.deleteAccountText}>회원탈퇴를 하시려면 여기를 눌러주세요</Text>
+          </TouchableOpacity> 
         </Layout>
       </ScrollView>
     </View>

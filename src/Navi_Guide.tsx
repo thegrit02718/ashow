@@ -1,17 +1,21 @@
 import React, { Component } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Main from './Guide/GuideMain';
-import Page1 from './Guide/Page1';
-import Page2 from './Guide/Page2';
+import NewsList from "./Guide/NewsList";
+import NewsDetail from "./Guide/NewsDetail";
+import GuideDetail from "./Guide/GuideDetail";
 
 const Stack = createNativeStackNavigator();
 
 function Navi_Guide() {
   return (
-    <Stack.Navigator >
-      <Stack.Screen options={{headerShown: false}} name={"Main"} component={Main} />
-      <Stack.Screen options={{headerShown: false}} name={'Page1'} component={Page1}/>
-      <Stack.Screen options={{headerShown: false}} name={'Page2'} component={Page2}/>
+    <Stack.Navigator 
+      screenOptions={{headerShown: false, contentStyle: {backgroundColor:'#fff'}}}
+    >
+      <Stack.Screen name={"GuideMain"} component={Main} />
+      <Stack.Screen name={"NewsList"} component={NewsList} />
+      <Stack.Screen name={"NewsDetail"} component={NewsDetail} />
+      <Stack.Screen name={"GuideDetail"} component={GuideDetail} />
     </Stack.Navigator>
   );
 }

@@ -47,6 +47,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CodePushDeploymentKey</key>
+	<string>c_ZWqvRWbCO7_Ah0_lH1UqkQ9HAF9x0cv0Lon</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>5e903717a4966f9f33d70c77b3510381</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -84,6 +86,9 @@
 		<string>FontAwesome5_Brands.ttf</string>
 		<string>FontAwesome5_Regular.ttf</string>
 		<string>FontAwesome5_Solid.ttf</string>
+		<string>FontAwesome6_Brands.ttf</string>
+		<string>FontAwesome6_Regular.ttf</string>
+		<string>FontAwesome6_Solid.ttf</string>
 		<string>Foundation.ttf</string>
 		<string>Ionicons.ttf</string>
 		<string>MaterialCommunityIcons.ttf</string>
@@ -96,6 +101,7 @@
 		<string>Fonts/Pretendard-Regular.ttf</string>
 		<string>Fonts/Pretendard-Light.ttf</string>
 		<string>Fonts/Pretendard-Thin.ttf</string>
+		<string>Fonts/Pretendard-SemiBold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

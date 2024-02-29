@@ -21,8 +21,30 @@ function Logister (props : any) {
     }
   }
 
+  const generateRandomNickName = async () => {
+    const list = ["아쇼", "아파트", "분양", "부동산"]
+    const randomIndex = Math.floor(Math.random() * list.length);
+    const randomNumber = `${Math.floor(Math.random() * 1000000)}`;
+    const randomNickName = `${list[randomIndex]}${randomNumber}`;
+    try {
+      const res = await axios.post(`${MainURL}/login/nicknamecheck`, {
+        userNickName : randomNickName
+      });
+      if (res.data) {
+        generateRandomNickName();
+      } else {
+        setUserNickName(randomNickName);
+        setCountText(randomNickName.length);
+        setErrorMessageNickName('랜덤 추천 닉네임을 사용해보세요');
+      }
+    } catch (error) {
+      console.error('랜덤 생성 닉네임 중복 확인 중 에러 발생:', error);
+    }
+  };
+
   useEffect(()=>{
     navi_dataSet();
+    generateRandomNickName();
   }, [])
 
 
@@ -30,7 +52,6 @@ function Logister (props : any) {
   const [isUserNickName, setIsUserNickName] = useState<boolean>(true);
   const [errorMessageNickName, setErrorMessageNickName] = useState<string>('');
   const [countText, setCountText] = useState<number>(0);
-  
 
   const onChangeUserNickName = (text : string) => {
     setUserNickName(text);
@@ -48,6 +69,7 @@ function Logister (props : any) {
 
   const nickNameTextCancel = () => {
     setUserNickName('');
+    setIsUserNickName(false);
     setCountText(0);
     setErrorMessageNickName('');
   };
@@ -55,11 +77,10 @@ function Logister (props : any) {
 
   const isValidUserName = async ()=>{
     try{
-      if (userNickName !== '') {
+      if (userNickName !== '' && userNickName.length >= 2 && userNickName.length <= 10 ) {
         const res = await axios.post(`${MainURL}/login/nicknamecheck`, {
           userNickName : userNickName
         });
-        console.log(res.data);
         if (res.data) {
           setErrorMessageNickName('이미 사용 중입니다. 다른 닉네임을 시도해 주세요.');
           setIsUserNickName(false);
@@ -67,32 +88,32 @@ function Logister (props : any) {
           setErrorMessageNickName('사용 가능한 닉네임입니다.');
           setIsUserNickName(true);
         }
-      } else {
+      } else if (userNickName === '') {
         setErrorMessageNickName('빈칸을 입력해주세요');
+        setIsUserNickName(false);
+      } else if (userNickName.length < 2 || userNickName.length > 10) {
+        setErrorMessageNickName('글자수가 최소 2자 이상 10자 이하여야 합니다');
+        setIsUserNickName(false);
       }
     } catch (error){
         console.log(error);
     }
   }
 
-  const moveResidencePage = () => {
-    if (userNickName) {
+  const moveAgreePage = () => {
+    if (userNickName && isUserNickName) {
       const updatedData = { ...routeData, nickName: userNickName };
-      props.navigation.navigate('ResidenceSelect', { data: updatedData });
+      props.navigation.navigate('Agree', { data: updatedData });
     } else {
-      Alert.alert('빈칸을 입력해주세요');
+      Alert.alert('올바른 형식으로 입력해주세요');
     }
   };
 
+
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex:1}}
-      >
-      <ScrollView style={{flex:1}}>
       <View style={styles.progressBarBox}>
-        <View style={styles.progressBar}>
+        <View  style={styles.progressBar}>
           <View style={styles.progress}></View>
         </View>
       </View>
@@ -104,64 +125,62 @@ function Logister (props : any) {
           }}
           >
           <AntDesign name="arrowleft" size={24} color="black" />
-        </TouchableOpacity>
-        <View style={styles.inputContainer}>
+        </TouchableOpacity>  
+        
+        <>
           <Typography fontSize={24} marginBottom={5} fontWeightIdx={2}>안녕하세요!</Typography>
           <Typography fontSize={24} marginBottom={5} fontWeightIdx={2}>아쇼에서 사용하실</Typography>
           <Typography fontSize={24} marginBottom={30}  fontWeightIdx={2} >
             <Typography fontSize={24}>닉네임</Typography>을 입력해주세요.
           </Typography>
-         
+        </>
 
-          {/* 닉네임 */}
-          <View style={{ height : 150 }}>
-            <Text style={styles.inputFieldTitle}>닉네임</Text>
-            <View style={styles.inputFieldRow}>
-              <TextInput
-                style={styles.inputFieldText}
-                placeholder="예) 아쇼123"
-                placeholderTextColor="#8C8C8C"
-                onChangeText={onChangeUserNickName}
-                defaultValue={userNickName}
-                onEndEditing={isValidUserName}
-              />
-              {userNickName ?
-              <View style={styles.inputFieldButton}>
-                <View style={styles.inputFieldCheck}>
-                {isUserNickName ? <Entypo name="check" size={24} color="black" style={{color: 'green'}}/>
-                  : <AntDesign name="warning" size={20} color="red" />}
-                </View>
-                <TouchableOpacity 
-                  style={styles.inputFieldCancel}
-                  onPress={nickNameTextCancel}
-                  >
-                  <Text style={{ fontSize: 20}}>
-                    <Feather name="x" size={24} color="black" /> 
-                  </Text> 
-                </TouchableOpacity>
+        {/* 닉네임 */}
+        <View style={{flex:1}}>
+          <View style={styles.inputFieldRow}>
+            <TextInput
+              style={styles.inputFieldText}
+              placeholder="예) 아쇼123"
+              placeholderTextColor="#8C8C8C"
+              onChangeText={onChangeUserNickName}
+              defaultValue={userNickName}
+              onEndEditing={isValidUserName}
+            />
+            {userNickName ?
+            <View style={styles.inputFieldButton}>
+              <View style={styles.inputFieldCheck}>
+              {isUserNickName ? <Entypo name="check" size={24} color="black" style={{color: 'green'}}/>
+                : <AntDesign name="warning" size={20} color="red" />}
               </View>
-              : null
-              }
+              <TouchableOpacity 
+                style={styles.inputFieldCancel}
+                onPress={nickNameTextCancel}
+                >
+                <Text style={{ fontSize: 20}}>
+                  <Feather name="x" size={24} color="black" /> 
+                </Text> 
+              </TouchableOpacity>
             </View>
-            <View style={styles.inputHelperCounter}>
-              <Text style={isUserNickName ? styles.successText : styles.errorText}>
-                <Text>{errorMessageNickName}</Text>
-              </Text>  
-              <Text>{countText}/10</Text>
-            </View>
+            : null
+            }
           </View>
-          <TouchableOpacity 
-            onPress={moveResidencePage}
-            style={
-              isUserNickName ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
-              : [styles.nextBtnBox, { backgroundColor: '#F0A3A1'}] 
-            }>
-            <Text style={styles.nextBtnText}>다음</Text>
-          </TouchableOpacity>
+          <View style={styles.inputHelperCounter}>
+            <Text style={isUserNickName ? styles.successText : styles.errorText}>
+              <Text>{errorMessageNickName}</Text>
+            </Text>  
+            <Text>{countText}/10</Text>
+          </View>
         </View>
+        <TouchableOpacity 
+          onPress={moveAgreePage}
+          style={
+            isUserNickName
+            ? [styles.nextBtnBox, { backgroundColor: '#E8726E'}] 
+            : [styles.nextBtnBox, { backgroundColor: '#F0A3A1'}] 
+          }>
+          <Text style={styles.nextBtnText}>다음</Text>
+        </TouchableOpacity>
       </View> 
-      </ScrollView>
-      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -180,12 +199,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFEF',    
   },
   progress: {
-    width: '33%',
+    width: '50%',
     height: 6,
     backgroundColor: '#F0A3A1',
   },
   mainContainer: {
-    justifyContent: 'center',
+    flex: 1,
     padding: 24,
   },
   backButton: {
@@ -196,7 +215,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputContainer: {
-    flex: 5,
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
@@ -246,12 +264,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
   },
-
   nextBtnBox: {
     backgroundColor: '#F0A3A1',
     borderRadius: 16,
-    width: '100%',
-    marginVertical: 50,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center'

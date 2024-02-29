@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { getStatusBarHeight } from "react-native-status-bar-height";
 
-export default function Agree (props : any) {
-  
+export default function Result (props : any) {
+
   const moveHome = () => {
     props.navigation.replace('Navi_Main');
   };
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8726E',
     borderRadius: 16,
     width: '100%',
-    marginBottom: 30,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center'

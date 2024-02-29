@@ -41,10 +41,10 @@ function DeleteAccount (props: any) {
       .post(`${MainURL}/login/deleteaccount`, {
         userAccount: asyncGetData.userAccount, userNickName: asyncGetData.userNickName
       })
-      .then((res) => {
+      .then(async (res) => {
         if (res.data === true) {
           Alert.alert('탈퇴 되었습니다.');
-          handleLogout();
+          await handleLogout();
           props.navigation.replace("Navi_Login");
         } else {
           Alert.alert('다시 시도해주세요.');
@@ -58,10 +58,10 @@ function DeleteAccount (props: any) {
 
   const handleLogout = () => {
     AsyncStorage.removeItem('token');
-    AsyncStorage.removeItem('name');
-    AsyncStorage.removeItem('school');
-    AsyncStorage.removeItem('schNum');
-    AsyncStorage.removeItem('part');
+    AsyncStorage.removeItem('Account');
+    AsyncStorage.removeItem('nickname');
+    AsyncStorage.removeItem('city');
+    AsyncStorage.removeItem('county');
     AsyncStorage.removeItem('URL');
   };
 
@@ -86,19 +86,19 @@ function DeleteAccount (props: any) {
               관련 법령에 따라, 보관이 필요할 경우 해당 기간 동안 회원 정보가 보관 될 수 있습니다.</Text>
           </View>
 
-          <View style={styles.checkButtonBox}>
-            <TouchableOpacity
+          <TouchableOpacity
               hitSlop={{ top: 15, bottom: 15 }}
               style={styles.checkButton}
               onPress={handelCheck}
             >
+          <View style={styles.checkButtonBox}>
               {
                 check ? <AntDesign name="checkcircle" size={20} color="red" />
                : <AntDesign name="checkcircleo" size={20} color="black" />
               }
-            </TouchableOpacity> 
             <Text style={styles.checkButtonText}> 위 유의사항을 확인하였습니다.</Text>
           </View>
+          </TouchableOpacity> 
 
           <View style={styles.actionButtonBox}>
               <TouchableOpacity 

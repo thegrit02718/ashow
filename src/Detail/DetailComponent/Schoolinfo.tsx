@@ -7,12 +7,19 @@ interface SchListContentProps {
   number: string;
   sort: any;
   distance: any;
+  navigation : any;
 }
 
-const SchListContent: React.FC<SchListContentProps> = ({ name, number, sort, distance }) => (
+const SchListContent: React.FC<SchListContentProps> = ({ name, number, sort, distance, navigation }) => (
   <View style={styles.textBox}>
     <View>
-      <Typography fontSize={16} marginBottom={5}>{name}</Typography>
+      <TouchableOpacity
+        onPress={()=>{
+          navigation.navigate('SchoolDetailWebView');
+        }}
+      >
+        <Typography fontSize={16} marginBottom={5}><Text style={{textDecorationLine:'underline', textDecorationColor:'#8C8C8C'}}>{name}</Text></Typography>
+      </TouchableOpacity>
       <View style={{flexDirection: 'row'}}>
         <Typography fontSize={14} color='#595959'>{sort} </Typography>
         <Typography fontSize={14} color='#8C8C8C'>{distance}m</Typography>
@@ -22,7 +29,7 @@ const SchListContent: React.FC<SchListContentProps> = ({ name, number, sort, dis
   </View>
 );
 
-function Tab1() {
+function Tab1(props:any) {
 
   const elementrySch = [
     { name : '대구 대청초등학교', number: '23.8명', sort: '공립', distance: '269' }
@@ -39,6 +46,7 @@ function Tab1() {
               number={item.number}
               sort={item.sort}
               distance={item.distance}
+              navigation={props.navigation}
             />
           )
         })
@@ -47,7 +55,7 @@ function Tab1() {
   );
 }
 
-function Tab2() {
+function Tab2(props:any) {
 
   const middleSch = [
     { name : '소선여자중학교', number: '30.8명', sort: '사립', distance: '269' },
@@ -66,6 +74,7 @@ function Tab2() {
               number={item.number}
               sort={item.sort}
               distance={item.distance}
+              navigation={props.navigation}
             />
           )
         })
@@ -74,7 +83,7 @@ function Tab2() {
   );
 }
 
-function Tab3() {
+function Tab3(props:any) {
 
   const highSch = [
     { name : '대구혜화여자고등학교', number: '20.8명', sort: '사립', distance: '359' },
@@ -93,6 +102,7 @@ function Tab3() {
               number={item.number}
               sort={item.sort}
               distance={item.distance}
+              navigation={props.navigation}
             />
           )
         })
@@ -101,16 +111,16 @@ function Tab3() {
   );
 }
 
-export default function Schoolinfo () {
+export default function Schoolinfo (props:any) {
   const [activeTab, setActiveTab] = useState('Tab1');
 
   const renderTabContent = () => {
     if (activeTab === 'Tab1') {
-      return <Tab1 />;
+      return <Tab1 navigation={props.navigation}/>;
     } else if (activeTab === 'Tab2') {
-      return <Tab2 />;
+      return <Tab2 navigation={props.navigation}/>;
     } else if (activeTab === 'Tab3') {
-      return <Tab3 />;
+      return <Tab3 navigation={props.navigation}/>;
     }
   };
 

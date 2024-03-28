@@ -8,7 +8,7 @@ export const Typography:React.FC<{
     color?:string,
     fontSize?:number,
     marginBottom?:number,
-    lineHeight?:null,
+    lineHeight?:number,
     children:React.ReactElement | any | React.ReactElement[]
 }> = (props)=>{
     

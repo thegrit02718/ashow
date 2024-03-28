@@ -32,6 +32,7 @@ const NewList: React.FC<NewListProps> = ({ title, date, media, image }) => (
 export default function NewsList (props : any) {
   
   const route : any = useRoute();
+  const title = route.params.title;
   const routeData = route.params.data;
   const [newsContents, setNewsContents] = useState(route.params.data);
 
@@ -93,6 +94,9 @@ export default function NewsList (props : any) {
             rowTextStyle={{fontSize:12, fontWeight:'bold'}}
           />
         </View>
+      </View>
+      <View style={{paddingHorizontal:22, marginBottom:20}}>
+        <Typography fontSize={24}>{title}</Typography>
       </View>
 
       <Divider height={2} />

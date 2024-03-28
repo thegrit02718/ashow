@@ -8,113 +8,150 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import { Divider } from '../Components/Divider'
 import { Alert } from 'react-native'
+import axios from 'axios'
+import MainURL from '../../MainURL'
 
 
-interface historyProps{
-  visitedList : visitedListProps[];
-  favoritedList: favoritedListProps[];
+
+type BuildingsProps = {
+  addressLocal: string;
+  addressRest: string;
+  aptName:string;
+  inDate: string;
+  aptKey: string;
+  houseHoldSum: string;
 }
 
-type visitedListProps = {
-  address:string;
-  type:string;
-  aptKey: string | number;
-}
-type favoritedListProps = {
-  name:string;
-  address:string;
+type FavorBuildingsProps = {
+  addressCity: string;
+  addressLocal: string;
+  addressRest: string;
+  aptName:string;
+  inDate: string;
+  aptKey: string;
+  houseHoldSum: string;
+  discountPer: number;
+  priceLow: number;
 }
 
-export default function SearchHistory( ) {
-  
-  const [historyList,setHistoryList] = useState<historyProps>({
-    visitedList: [],
-    favoritedList: []
-  })
+export default function SearchHistory(props:any) {
+
  
-  const dummyData1 = [
-      { address: "대구 수성구", type:"지역",aptKey:1 },
-      { address: "대구", type:"지역",aptKey:2 },
-      { address: "대구 수성구 만촌동", type:"지역", aptKey:3 },
-      { address: "대구", type:"지역",aptKey:4 },
-      { address: "대구 수성구", type:"지역", aptKey:5 },
-  ]
-  const dummyData2 = [
-    {
-      promotionSite:"수성더팰리스",
-      addressCity: "대구광역시",
-      addressCounty: "수성구",
-      addressRest: "만촌동 1489"
-    },
-    {
-      addressCity: "대구광역시",
-      addressCounty: "수성구",
-      addressRest: "수성동1가 649-19번지",
-      promotionSite: "푸르지오더샵",
-    }
-  ]
-  const filteredAddress = dummyData2?.map(item =>{
-    let filteredCity = item.addressCity.slice(0,2);
-    let filteredaddressRest = item.addressRest.split(" ")[0];
-    return {
-      name: item.promotionSite,
-      address: filteredCity + " " + item.addressCounty+ " " + filteredaddressRest
-    }
-  })
+  const [refresh, setRefresh] = useState<boolean>(false);
+  const [lastViewedBuildingList, setLastViewedBuildingList] = useState<BuildingsProps[]>([]);
+  const [favorList, setFavorList] = useState<FavorBuildingsProps[]>([]);
 
-  useEffect(() => {
-    setHistoryList({
-      visitedList: dummyData1,
-      favoritedList: filteredAddress,
-    })
-  },[])
-    
-    const deleteAll = () => {
-        setHistoryList((prev:any) =>{
-        return {
-          ...prev,
-          visitedList: []
-        }
-        });
-        // 전체삭제 api 필요
-    };
+  const getUserLastViewedList = async() =>{
+    try{
+      const res_buliding = await axios.get(`${MainURL}/mypage/getlastviewedbuilding/${props.asyncGetData.userAccount}`);
+      getBuildingsData(res_buliding.data)
+    }catch(err){
+      console.log(err);
+    }
+  }
+ 
+  const getBuildingsData = async( list : any) =>{
+    try{
+      const res = await axios.get(`${MainURL}/buildings/buildingsall`);
+      const filteredData = res.data.filter((item:any) => list.includes(item.aptKey.toString()));
+      setLastViewedBuildingList(filteredData);
+    }catch(err){
+      console.log(err);
+    }
+  }
 
-    const deleteList = (aptKey: string) => {
-      console.log(aptKey);
-      setHistoryList((prev: historyProps) => {
-        return {
-          ...prev,
-          visitedList: prev.visitedList.filter(item =>{
-            console.log(item.aptKey,aptKey,item.aptKey !== aptKey);
-            return item.aptKey.toString() !== aptKey
-          }),
-        };
-      });
-      //부분삭제 api 필요
-    };
+
+  const getUserFavorList = async() =>{
+    try{
+      const res = await axios.get(`${MainURL}/mypage/getfavorlist/${props.asyncGetData.userAccount}`);
+      getFavorBuildingsData(res.data)
+    }catch(err){
+      console.log(err);
+    }
+  }
+ 
+  const getFavorBuildingsData = async( list : any) =>{
+    try{
+      const res = await axios.get(`${MainURL}/buildings/buildingsall`);
+      const filteredData = res.data.filter((item:any) => list.includes(item.aptKey.toString()));
+      setFavorList(filteredData);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  useEffect(()=>{
+    getUserFavorList();
+    getUserLastViewedList();
+  },[refresh]);
+
+
+  // 최근본 방문 매물 선택 삭제하기
+  const lastViewBuildingDelete = async (aptKey : string) => {
+    axios
+      .post(`${MainURL}/mypage/lastviewbuildingdelete`, {
+        userAccount : props.asyncGetData.userAccount,
+        aptKey : aptKey
+      })
+      .then((res) => {
+        if (res.data) {
+          Alert.alert('삭제되었습니다.');
+          setRefresh(!refresh);
+        }        
+      })
+      .catch(() => {
+        console.log('실패함')
+      })
+  };
+
+  // 최근본 방문 매물 전체 삭제하기
+  const lastViewBuildingDeleteAll = async () => {
+    axios
+      .post(`${MainURL}/mypage/lastviewbuildingdeleteall`, {
+        userAccount : props.asyncGetData.userAccount,
+      })
+      .then((res) => {
+        if (res.data) {
+          Alert.alert('삭제되었습니다.');
+          setRefresh(!refresh);
+        }        
+      })
+      .catch(() => {
+        console.log('실패함')
+      })
+  };
 
   return (
     <View style={styles.wrapper}>
       <View>
           <View style={[styles.titleBox,{  flexDirection:'row', justifyContent:'space-between', alignItems:'center'}]}>
             <Typography color='#333' fontSize={16} fontWeightIdx={0}>최근 방문</Typography>
-            <TouchableOpacity onPress={deleteAll} >
+            <TouchableOpacity 
+              onPress={lastViewBuildingDeleteAll} 
+            >
               <Text style={styles.deleteAllBtn}>전체삭제</Text>
             </TouchableOpacity>
           </View>
           <View>
-            {historyList.visitedList.length >= 1 ? historyList.visitedList.map((item, index) => {
+            { lastViewedBuildingList.length > 0 ?
+            lastViewedBuildingList.map((item, index) => {
+
+              const copy = item.addressRest.split(' ');
+              const addressRestCopy = copy[0];
+
               return (
               <View key={index} style={[styles.flexBox, styles.align_center,{justifyContent:'space-between', marginVertical:8}]}> 
-                <TouchableOpacity onPress={()=>Alert.alert('click')} style={[styles.flexBox, styles.align_center]}>
-                    {/* onPress에 navigation 입력해야함*/} 
+                <TouchableOpacity 
+                  style={[styles.flexBox, styles.align_center]}
+                  onPress={()=>{}} 
+                >
                   <Entypo  name="location-pin" size={18} color="#555555" style={{marginRight:8}}/> 
                   <View style={[styles.flexBox, styles.align_center ]}>
-                    <Typography fontSize={14} fontWeightIdx={1} color='#1B1B1B'>{item.address} </Typography> 
-                    <Text style={{fontSize:12, color:"#6F6F6F", marginBottom:2}}>· {item.type}</Text>
+                    <Typography fontSize={14} fontWeightIdx={1} color='#1B1B1B'>{item.aptName} ・</Typography> 
+                    <Typography fontSize={12} fontWeightIdx={1} color='#6F6F6F'>{addressRestCopy}</Typography> 
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={()=> deleteList(item.aptKey.toString())}>
+                <TouchableOpacity onPress={()=> {lastViewBuildingDelete(item.aptKey)}}>
                   <EvilIcons  name="close" size={22} color="#555555" style={{marginBottom: 4}}/> 
                 </TouchableOpacity>
               </View>)
@@ -130,14 +167,29 @@ export default function SearchHistory( ) {
           <Typography fontSize={16}>관심단지</Typography>
         </View>
           <View>
-            {dummyData2.length > 1 ? filteredAddress.map((item, index) => {
+            {
+            favorList.length > 0 ? 
+            favorList.map((item:any, index:any) => {
               return (
-                <TouchableOpacity onPress={()=>Alert.alert('click')}style={{marginVertical:8}} key={index}>
-                  {/* onPress에 navigation 입력해야함*/} 
+                <TouchableOpacity 
+                  onPress={()=>{
+                    props.navigation.navigate('Navi_Detail', {
+                      screen: 'DetailMain',
+                      params: {
+                        aptKey : item.aptKey,
+                        pyengKey : 1,
+                        userAccount : props.asyncGetData.userAccount,
+                        userNickName : props.asyncGetData.userNickName
+                      }
+                    })
+                  }}
+                  style={{marginVertical:8}} 
+                  key={index}
+                >
                   <View style={[styles.flexBox,{alignItems:"center", justifyContent:"space-between", marginVertical:8}]}>
                     <View>
-                      <Typography fontSize={12} color='#8B8B8B' fontWeightIdx={2}>{item.address}</Typography>
-                      <Typography fontSize={16} color='#1B1B1B' fontWeightIdx={1}>{item.name}</Typography>
+                      <Typography fontSize={12} color='#8B8B8B' fontWeightIdx={2}>{item.addressCity} {item.addressCounty}</Typography>
+                      <Typography fontSize={16} color='#1B1B1B' fontWeightIdx={1}>{item.aptName}</Typography>
                     </View>
                     <SimpleLineIcons name="arrow-right" size={12} color="#555555"/> 
                   </View>

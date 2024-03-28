@@ -12,7 +12,7 @@ import MainURL from '../../../MainURL';
 type BuildingsProps = {
   addressLocal: string;
   addressRest: string;
-  name:string;
+  aptName:string;
   inDate: string;
   aptKey: string;
   houseHoldSum: string;

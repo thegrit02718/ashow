@@ -14,6 +14,7 @@ import GalleryDetail from "./Detail/DetailPage/GalleryDetail";
 import { Platform } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import CommunityImageDetail from "./Detail/DetailPage/CommunityImageDetail";
+import SchoolDetailWebView from "./Detail/DetailComponent/SchoolDetailWebView";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,8 @@ function Navi_Detail() {
       <Stack.Screen name={'Gallery'} component={Gallery}/>
       <Stack.Screen name={'GalleryDetail'} component={GalleryDetail}/>
       <Stack.Screen name={"ArrangeBuildingDetail"} component={ArrangeBuildingDetail} />
+      <Stack.Screen name={"SchoolDetailWebView"} component={SchoolDetailWebView} />
+      
     </Stack.Navigator>
   );
 }

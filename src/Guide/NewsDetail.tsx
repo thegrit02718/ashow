@@ -34,7 +34,7 @@ export default function NewsDetail (props : any) {
           </View>
         
           <View style={styles.newsTextBox}>
-            <Typography marginBottom={10} fontSize={20}>{newsContents.title}</Typography>
+            <Typography marginBottom={10} fontSize={24} fontWeightIdx={2}>{newsContents.title}</Typography>
             <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:10}}>
               <Typography fontSize={12} color={'#8C8C8C'}>입력 | {newsContents.date}</Typography>
               <Typography fontSize={12} color={'#8C8C8C'}>{newsContents.author}</Typography>
@@ -56,7 +56,7 @@ export default function NewsDetail (props : any) {
           </View>
           
           <View style={styles.newsTextBox}>
-            <Typography marginBottom={10} fontWeightIdx={2}>{newsContents.content}</Typography>
+            <Typography marginBottom={10} fontWeightIdx={2} lineHeight={25}>{newsContents.content}</Typography>
           </View>
           
         </View>
@@ -100,7 +100,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 10,
-    resizeMode:'cover'
+    resizeMode:'cover',
+    alignItems:'center',
+    justifyContent:'center'
   },
   button: {
     borderWidth:1,

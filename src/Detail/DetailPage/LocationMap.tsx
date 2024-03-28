@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { View, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import { SubTitle } from '../../Components/SubTitle';
 import { useRoute } from '@react-navigation/native';
-import NaverMapView, { Marker } from "react-native-nmap";
+import NaverMapView, { Marker, Circle } from "react-native-nmap";
 import axios from 'axios';
 import { Typography } from '../../Components/Typography';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';

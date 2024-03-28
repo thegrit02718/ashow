@@ -168,7 +168,15 @@ export default function FavorList (props : any) {
                         ?
                         null
                         :
-                        props.navigation.navigate('매물', {screen : 'Detail', params : { data : item}});
+                        props.navigation.navigate('Navi_Detail', {
+                          screen: 'DetailMain',
+                          params: {
+                            aptKey : item.aptKey,
+                            pyengKey : 1,
+                            userAccount : props.route.params.userAccount,
+                            userNickName : props.route.params.userNickName
+                          }
+                        })
                     }}
                   >
                     <View style={styles.contentBox}>

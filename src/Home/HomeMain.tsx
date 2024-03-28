@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, ScrollView, Alert, Linking, Modal } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, ScrollView, Alert, Linking, Modal, Dimensions } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MainURL from '../../MainURL';
@@ -151,7 +151,7 @@ function HomeMain(props : any) {
       <View style={styles.wrapper}>
 
         <View style={styles.container}>
-          
+
           <View style={styles.header}>
             <View style={[styles.flexBox,{gap:12}]}>
               <Image style={styles.logo} source={require('../images/home/toplogo.png')} resizeMode='contain'/>
@@ -171,7 +171,7 @@ function HomeMain(props : any) {
               <Feather name="search" size={22} color="#333" />
             </TouchableOpacity>
           </View>
-
+        
           <Modal
             animationType="slide"
             transparent={true}
@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    width: Dimensions.get('window').width
   },
   wrapper:{
     flexDirection:'column',

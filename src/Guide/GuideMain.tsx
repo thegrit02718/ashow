@@ -55,7 +55,7 @@ function GuideMain (props : any) {
             <Typography fontSize={24}>{props.title}</Typography>
             <TouchableOpacity
               onPress={()=>{
-                props.navigation.navigate("NewsList", { data: props.newsContents });
+                props.navigation.navigate("NewsList", { title: props.title, data: props.newsContents });
               }}
             >
               <AntDesign size={20} name='right'/>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 10,
-    resizeMode:'contain'
+    resizeMode:'cover'
   },
   button: {
     borderWidth:1,

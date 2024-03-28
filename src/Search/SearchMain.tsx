@@ -191,7 +191,7 @@ export default function SearchMain (props: any) {
                 aptlist={props.route.params.aptlist}
                 asyncGetData={props.route.params.asyncGetData} 
             />}
-            {currentTab === 2 && <SearchHistory/>}
+            {currentTab === 2 && <SearchHistory navigation={props.navigation} asyncGetData={props.route.params.asyncGetData} />}
             <View style={{height:100}}></View>
           </ScrollView>
         </>

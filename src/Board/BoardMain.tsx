@@ -103,7 +103,10 @@ export default function BoardMain (props: any) {
           </View>
         </View>
 
-        <View style={{paddingHorizontal:20, paddingBottom:15,flexDirection:'row', alignItems:'center'}}>
+        <ScrollView 
+          horizontal
+          style={{paddingHorizontal:20, paddingBottom:15,flexDirection:'row'}}
+        >
           <TouchableOpacity 
             style={{alignItems:'center', marginRight:10}}
             onPress={()=>{
@@ -118,7 +121,7 @@ export default function BoardMain (props: any) {
             onPress={()=>{
               handlePostListFilter('분양정보');
             }}>
-            <Image source={require('../images/board/icon1.png')} style={{width:25, height:25, marginBottom:5}}/>
+            <Image source={require('../images/board/icon1.png')} style={{width:20, height:25, marginBottom:5, resizeMode:'contain'}}/>
             <Typography fontSize={14} color='#8B8B8B'>분양정보</Typography>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -126,7 +129,7 @@ export default function BoardMain (props: any) {
             onPress={()=>{
               handlePostListFilter('급매정보');
             }}>
-            <Image source={require('../images/board/icon2.png')} style={{width:25, height:25, marginBottom:5}}/>
+            <Image source={require('../images/board/icon2.png')} style={{width:30, height:25, marginBottom:5, resizeMode:'contain'}}/>
             <Typography fontSize={14} color='#8B8B8B'>급매정보</Typography>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -134,7 +137,7 @@ export default function BoardMain (props: any) {
             onPress={()=>{
               handlePostListFilter('경매공매');
             }}>
-            <Image source={require('../images/board/icon3.png')} style={{width:25, height:25, marginBottom:5}}/>
+            <Image source={require('../images/board/icon3.png')} style={{width:25, height:25, marginBottom:5, resizeMode:'contain'}}/>
             <Typography fontSize={14} color='#8B8B8B'>경매・공매</Typography>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -142,10 +145,19 @@ export default function BoardMain (props: any) {
             onPress={()=>{
               handlePostListFilter('부동산정책');
             }}>
-            <Image source={require('../images/board/icon4.png')} style={{width:25, height:25, marginBottom:5}}/>
+            <Image source={require('../images/board/icon4.png')} style={{width:20, height:25, marginBottom:5, resizeMode:'contain'}}/>
             <Typography fontSize={14} color='#8B8B8B'>부동산정책</Typography>
           </TouchableOpacity>
-        </View>
+          <TouchableOpacity 
+            style={{alignItems:'center', marginHorizontal:10}}
+            onPress={()=>{
+              handlePostListFilter('자유게시판');
+            }}>
+            <Image source={require('../images/board/icon5.png')} style={{width:30, height:25, marginBottom:5, resizeMode:'contain'}}/>
+            <Typography fontSize={14} color='#8B8B8B'>자유게시판</Typography>
+          </TouchableOpacity>
+          <View style={{marginRight:30}}></View>
+        </ScrollView>
 
                 
         <Divider height={5} />
@@ -163,10 +175,11 @@ export default function BoardMain (props: any) {
                   >
                     <View style={styles.postAuthor}>
                       <View style={{flexDirection:'row', alignItems:'center', borderWidth:1, borderColor:'#F5F4F3', borderRadius:5, padding:3 }}>
-                        {post.sort === '분양정보' && <Image source={require('../images/board/icon1.png')} style={{width:15, height:15, marginRight:5}}/>}
-                        {post.sort === '급매정보' && <Image source={require('../images/board/icon2.png')} style={{width:20, height:20, marginRight:5}}/>}
-                        {post.sort === '경매공매' && <Image source={require('../images/board/icon3.png')} style={{width:15, height:15, marginRight:5}}/>}
-                        {post.sort === '부동산정책' && <Image source={require('../images/board/icon4.png')} style={{width:15, height:15, marginRight:5}}/>}
+                        {post.sort === '분양정보' && <Image source={require('../images/board/icon1.png')} style={{width:15, height:15, marginRight:5, resizeMode:'contain'}}/>}
+                        {post.sort === '급매정보' && <Image source={require('../images/board/icon2.png')} style={{width:20, height:20, marginRight:5, resizeMode:'contain'}}/>}
+                        {post.sort === '경매공매' && <Image source={require('../images/board/icon3.png')} style={{width:15, height:15, marginRight:5, resizeMode:'contain'}}/>}
+                        {post.sort === '부동산정책' && <Image source={require('../images/board/icon4.png')} style={{width:15, height:15, marginRight:5, resizeMode:'contain'}}/>}
+                        {post.sort === '자유게시판' && <Image source={require('../images/board/icon5.png')} style={{width:15, height:15, marginRight:5, resizeMode:'contain'}}/>}
                         <Typography color='#6F6F6F' fontSize={12} fontWeightIdx={2}>{post.sort}</Typography>
                       </View>
                       <Typography fontSize={12} color='#8B8B8B' fontWeightIdx={2}>{DateFormmating(post.date)}</Typography>
